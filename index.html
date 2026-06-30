@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Improvement Note — RPS MKN4103 Penagihan dan Upaya Hukum</title>
+<style>
+/* ─────────────────────────────────────────────
+   DESIGN TOKENS  —  v3 refinement
+   Perubahan dari v2:
+   • Font-size base naik 15→16px (keterbacaan)
+   • Line-height body 1.65→1.7
+   • Warna body text lebih gelap (#1E293B → #18222F)
+   • Border radius lebih konsisten (hanya r-sm/r/r-lg)
+   • Section padding lebih lega (56→64px)
+   • Sidebar lebih sempit agar main content lebih lebar
+───────────────────────────────────────────── */
+:root{
+  /* Palette */
+  --navy:      #1A2B5E;
+  --navy-dk:   #0C1830;
+  --navy-mid:  #1e3370;
+  --blue:      #2B57B5;
+  --blue-br:   #4A8AE8;   /* brighter blue — for CTA on dark bg */
+  --blue-lt:   #DBEAFE;
+  --blue-xlt:  #EFF6FF;
+  --teal:      #0E7490;
+  --teal-lt:   #CFFAFE;
+  --red:       #B91C1C;
+  --red-lt:    #FEE2E2;
+  --amber:     #B45309;
+  --amber-lt:  #FEF3C7;
+  --green:     #166534;
+  --green-lt:  #DCFCE7;
+  --green-mid: #15803D;
+  /* Text */
+  --tx-primary:  #18222F;
+  --tx-secondary:#475569;
+  --tx-muted:    #94A3B8;
+  --tx-inverse:  #FFFFFF;
+  /* Surfaces */
+  --bg-page:   #F1F5F9;
+  --bg-card:   #FFFFFF;
+  --bg-subtle: #F8FAFC;
+  --bg-tint:   #F0F4F8;   /* refined neutral-cool tint, replaces #EEF2FF */
+  /* Borders */
+  --bd:        #E2E8F0;
+  --bd-md:     #CBD5E1;
+  /* Shadows */
+  --sh-xs: 0 1px 2px rgba(0,0,0,.06);
+  --sh-sm: 0 2px 6px rgba(0,0,0,.08);
+  --sh-md: 0 4px 14px rgba(0,0,0,.10);
+  --sh-lg: 0 8px 28px rgba(0,0,0,.13);
+  /* Radius */
+  --r-sm:  6px;
+  --r:     10px;
+  --r-lg:  16px;
+  --r-xl:  999px;
+  /* Motion */
+  --ease:  200ms ease;
+  --ease-md: 300ms ease;
+  /* Layout */
+  --sidebar-w: 224px;
+  --topbar-h:  54px;
+  --max-prose: 640px;
+  --content-max: 1240px;  /* caps main content width on wide screens */
+  /* Type scale — consolidated (5 sizes, was 8) */
+  --text-xs:   .72rem;   /* 11.5px — label, badge, metadata */
+  --text-sm:   .82rem;   /* 13.1px — secondary body, notes */
+  --text-base: .92rem;   /* 14.7px — primary body */
+  --text-md:   1rem;     /* 16px   — emphasized body */
+  --text-lg:   1.12rem;  /* 17.9px — card titles */
+}
+
+/* ─── RESET ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth;scroll-padding-top:calc(var(--topbar-h) + 8px)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--tx-primary);background:var(--bg-page);line-height:1.7;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+button{cursor:pointer;border:none;background:none;font-family:inherit;font-size:inherit;color:inherit}
+ul{list-style:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:var(--r-sm)}
+
+/* ─────────────────────────────────────────────
+   TOPBAR
+───────────────────────────────────────────── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:var(--topbar-h);
+  background:rgba(8,16,42,.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;
+}
+.tb-inner{
+  max-width:1440px;margin:0 auto;padding:0 20px;
+  width:100%;display:flex;align-items:center;gap:14px;
+}
+.tb-brand{
+  font-size:.8rem;font-weight:700;
+  color:rgba(255,255,255,.88);
+  white-space:nowrap;letter-spacing:.01em;
+}
+.tb-sep{width:1px;height:18px;background:rgba(255,255,255,.1)}
+.tb-progress{
+  flex:1;display:flex;align-items:center;gap:10px;
+  min-width:0;
+}
+.tb-pg-label{font-size:.7rem;color:rgba(255,255,255,.4);white-space:nowrap}
+.tb-pg-track{flex:1;height:2px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.tb-pg-fill{height:100%;background:linear-gradient(90deg,var(--blue),#38BDF8);width:0;transition:width .12s linear}
+.tb-actions{display:flex;gap:6px;flex-shrink:0}
+.tb-btn{
+  font-size:.72rem;font-weight:600;
+  color:rgba(255,255,255,.6);
+  padding:5px 13px;
+  border-radius:var(--r-xl);
+  border:1px solid rgba(255,255,255,.1);
+  transition:var(--ease);
+  white-space:nowrap;
+}
+.tb-btn:hover,.tb-btn:focus{background:rgba(255,255,255,.1);color:white;outline:none}
+#hbg{display:none;flex-direction:column;gap:5px;padding:10px;margin-left:4px;flex-shrink:0}
+#hbg span{display:block;width:20px;height:2px;background:white;border-radius:2px}
+
+/* ─────────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────────── */
+#wrap{display:flex;padding-top:var(--topbar-h);min-height:100vh}
+#sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  position:sticky;top:var(--topbar-h);
+  height:calc(100vh - var(--topbar-h));
+  overflow-y:auto;
+  background:var(--bg-card);
+  border-right:1px solid var(--bd);
+  display:flex;flex-direction:column;
+  padding:16px 0 20px;
+}
+#sidebar::-webkit-scrollbar{width:3px}
+#sidebar::-webkit-scrollbar-thumb{background:var(--bd-md);border-radius:3px}
+
+.sb-section{
+  font-size:.70rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--tx-muted);
+  padding:14px 20px 4px;
+}
+.sb-section:first-child{padding-top:4px}
+.sb-link{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 20px;
+  font-size:.8rem;color:var(--tx-secondary);
+  transition:var(--ease);
+  position:relative;width:100%;text-align:left;
+  border-left:3px solid transparent;
+}
+.sb-link:hover{color:var(--tx-primary);background:var(--bg-subtle)}
+.sb-link.on{
+  color:var(--blue);background:var(--blue-xlt);
+  font-weight:600;border-left-color:var(--blue);
+}
+.sb-icon{font-size:.9rem;width:18px;text-align:center;flex-shrink:0}
+.sb-badge{
+  margin-left:auto;font-size:.70rem;font-weight:700;
+  background:var(--red);color:white;
+  border-radius:var(--r-xl);padding:1px 7px;
+}
+/* Sidebar progress */
+.sb-footer{padding:16px 20px 0;margin-top:auto;border-top:1px solid var(--bd)}
+.sb-pg-title{font-size:.70rem;color:var(--tx-muted);margin-bottom:10px;font-weight:600;letter-spacing:.04em}
+.sb-bars{display:flex;flex-direction:column;gap:7px}
+.sb-bar-row{display:flex;align-items:center;gap:8px;font-size:.7rem}
+.sb-bar-lbl{width:58px;color:var(--tx-secondary);flex-shrink:0}
+.sb-bar-bg{flex:1;height:4px;background:var(--bd);border-radius:3px;overflow:hidden}
+.sb-bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.sb-bar-ct{width:22px;text-align:right;color:var(--tx-muted);font-size:.70rem}
+
+#main{flex:1;min-width:0;max-width:var(--content-max)}
+
+/* ─────────────────────────────────────────────
+   BACK TO TOP
+───────────────────────────────────────────── */
+#btt{
+  position:fixed;bottom:28px;right:28px;z-index:299;
+  width:38px;height:38px;border-radius:50%;
+  background:var(--navy);color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:700;
+  box-shadow:var(--sh-md);
+  opacity:0;pointer-events:none;transition:var(--ease-md);
+}
+#btt.show{opacity:1;pointer-events:all}
+#btt:hover{background:var(--blue)}
+
+/* ─────────────────────────────────────────────
+   SECTION BASE
+───────────────────────────────────────────── */
+.sec{padding:64px 48px;border-bottom:1px solid var(--bd)}
+.sec:last-child{border-bottom:none}
+.sec-white{background:var(--bg-card)}
+.sec-tint{background:var(--bg-tint)}
+.sec-dark{background:var(--navy-dk);color:var(--tx-inverse);border-top:1px solid rgba(255,255,255,.05)}
+.sec-navy{background:var(--navy);color:var(--tx-inverse)}
+
+/* Section header */
+.sh{margin-bottom:36px}
+.sh-eyebrow{
+  font-size:.70rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--tx-muted);
+  margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.sh-eyebrow::after{content:'';flex:1;height:1px;background:var(--bd);max-width:60px}
+.sec-dark .sh-eyebrow,.sec-navy .sh-eyebrow{color:rgba(255,255,255,.35)}
+.sec-dark .sh-eyebrow::after,.sec-navy .sh-eyebrow::after{background:rgba(255,255,255,.1)}
+.sh h2{
+  font-size:clamp(1.4rem,2.5vw,2rem);
+  font-weight:700;line-height:1.25;
+  letter-spacing:-.025em;color:var(--tx-primary);
+  margin-bottom:10px;
+}
+.sec-dark .sh h2,.sec-navy .sh h2{color:white}
+.sh .lede{
+  font-size:.95rem;color:var(--tx-secondary);
+  line-height:1.75;max-width:var(--max-prose);
+}
+.sec-dark .lede,.sec-navy .lede{color:rgba(200,220,255,.65)}
+
+/* ─────────────────────────────────────────────
+   HERO  (v3: two-column layout, less full-screen)
+───────────────────────────────────────────── */
+#hero{
+  padding:72px 48px 64px;
+  background:linear-gradient(150deg,#060E24 0%,#112060 48%,#0A1A40 100%);
+  position:relative;overflow:hidden;border-bottom:none;
+}
+#hero::before{
+  content:'';position:absolute;
+  top:-25%;right:-8%;
+  width:600px;height:600px;
+  background:radial-gradient(ellipse 60% 60% at 70% 35%,rgba(59,107,210,.32) 0%,transparent 70%);
+  pointer-events:none;
+}
+/* HERO: Two-column grid */
+.hero-grid{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:48px;align-items:center;
+  position:relative;z-index:1;
+}
+.hero-left{}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;
+  color:rgba(170,205,255,.8);
+  background:rgba(43,87,181,.2);
+  border:1px solid rgba(43,87,181,.35);
+  padding:4px 13px;border-radius:var(--r-xl);
+  margin-bottom:20px;
+}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:#60A5FA}
+.hero-h1{
+  font-size:clamp(1.7rem,3.5vw,2.8rem);
+  font-weight:800;color:white;
+  line-height:1.15;letter-spacing:-.03em;
+  margin-bottom:10px;
+}
+.hero-h1 em{font-style:normal;color:#93C5FD}
+.hero-byline{
+  font-size:.82rem;color:rgba(150,180,225,.6);
+  margin-bottom:14px;
+}
+.hero-desc{
+  font-size:.98rem;color:rgba(195,215,250,.85);
+  line-height:1.6;margin-bottom:28px;font-weight:500;
+  max-width:520px;
+}
+/* What this document is / is not — replaces pills */
+.hero-scope{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-bottom:28px;max-width:460px;
+}
+.hero-scope-item{
+  display:flex;align-items:flex-start;gap:7px;
+  font-size:.75rem;color:rgba(160,195,245,.7);
+  line-height:1.45;
+}
+.hero-scope-item .sc-icon{
+  width:16px;height:16px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.70rem;font-weight:700;flex-shrink:0;margin-top:1px;
+}
+.sci-no{background:rgba(185,28,28,.25);color:#FCA5A5}
+.sci-yes{background:rgba(22,101,52,.25);color:#86EFAC}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--blue-br);color:white;
+  font-size:.88rem;font-weight:600;
+  padding:11px 24px;border-radius:var(--r);
+  box-shadow:0 4px 20px rgba(74,138,232,.4);
+  transition:var(--ease-md);
+}
+.hero-cta:hover{background:#5C9AF5;transform:translateY(-1px);box-shadow:0 6px 26px rgba(74,138,232,.5);color:white}
+/* Hero right: stat panel */
+.hero-panel{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r-lg);overflow:hidden;
+}
+.hp-head{
+  background:rgba(255,255,255,.05);
+  padding:14px 20px;
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(170,200,255,.45);
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.hp-stats{display:flex;flex-direction:column}
+.hp-stat{
+  padding:18px 20px;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:16px;
+}
+.hp-stat:last-child{border-bottom:none}
+.hp-num{font-size:2.6rem;font-weight:800;color:white;line-height:1;flex-shrink:0;width:52px;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.hp-info{}
+.hp-label{font-size:.82rem;font-weight:600;color:rgba(200,225,255,.85);margin-bottom:2px}
+.hp-desc{font-size:.72rem;color:rgba(150,185,230,.5);line-height:1.45}
+/* Bottom strip */
+.hero-strip{
+  margin-top:36px;padding:14px 0 0;
+  border-top:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;gap:24px;
+  font-size:.75rem;color:rgba(160,195,245,.6);
+  flex-wrap:wrap;
+}
+.hero-strip span{display:flex;align-items:center;gap:5px}
+
+/* ─────────────────────────────────────────────
+   EXECUTIVE SUMMARY
+───────────────────────────────────────────── */
+/* Metric cards */
+.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.metric-card{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);padding:22px 20px;
+  position:relative;overflow:hidden;
+  transition:box-shadow var(--ease);
+}
+.metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.mc-blue::before{background:var(--blue)}
+.mc-amber::before{background:#D97706}
+.mc-green::before{background:var(--green-mid)}
+.metric-card:hover{box-shadow:var(--sh-sm)}
+.metric-num{
+  font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:6px;
+  letter-spacing:-.04em;
+}
+.mc-blue .metric-num{color:var(--blue)}
+.mc-amber .metric-num{color:#D97706}
+.mc-green .metric-num{color:var(--green-mid)}
+.metric-card h4{font-size:.9rem;font-weight:700;margin-bottom:5px;color:var(--tx-primary)}
+.metric-card p{font-size:.82rem;color:var(--tx-secondary);line-height:1.6}
+/* Key findings */
+.kf-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.kf-item{
+  background:var(--navy);border-radius:var(--r-lg);
+  padding:18px 20px;display:flex;gap:14px;align-items:flex-start;
+  border-left:3px solid transparent;
+}
+.kf-item.kf-primary{border-left-color:#60A5FA}
+.kf-item.kf-secondary{border-left-color:#5EEAD4}
+.kf-icon{font-size:1.2rem;flex-shrink:0;line-height:1;margin-top:1px}
+.kf-title{font-size:.88rem;font-weight:700;color:white;margin-bottom:4px}
+.kf-text{font-size:.82rem;color:rgba(180,205,245,.72);line-height:1.65;max-width:640px}
+/* Quick action */
+.qa-bar{
+  background:var(--green-lt);
+  border:1px solid #A7F3D0;
+  border-radius:var(--r-lg);
+  padding:14px 18px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.qa-icon{font-size:1.1rem;flex-shrink:0;line-height:1;margin-top:1px}
+.qa-text{font-size:.84rem;line-height:1.65}
+.qa-text strong{color:var(--green);display:block;margin-bottom:2px;font-size:.82rem;font-weight:700}
+.qa-text span{color:#166534}
+
+/* ─────────────────────────────────────────────
+   CONTEXT
+───────────────────────────────────────────── */
+.alert-callout{
+  background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--r-lg);
+  padding:14px 18px;margin-bottom:24px;
+  display:flex;align-items:flex-start;gap:12px;
+}
+.alert-callout .ac-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+.alert-callout .ac-text{font-size:.85rem;color:#78350F;line-height:1.65}
+.alert-callout .ac-text strong{font-weight:700}
+.ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.ctx-box{border-radius:var(--r-lg);padding:20px;border:1px solid var(--bd)}
+.ctx-light{background:var(--bg-card)}
+.ctx-dark-box{background:var(--navy);border-color:rgba(255,255,255,.08)}
+.ctx-box h4{font-size:.88rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.ctx-dark-box h4{color:white}
+.ctx-entry{margin-bottom:12px}
+.ctx-entry:last-child{margin-bottom:0}
+.ctx-entry-title{font-size:.83rem;font-weight:600;margin-bottom:3px;color:var(--tx-primary)}
+.ctx-dark-box .ctx-entry-title{color:rgba(210,230,255,.9)}
+.ctx-entry-desc{font-size:.79rem;color:var(--tx-secondary);line-height:1.55}
+.ctx-dark-box .ctx-entry-desc{color:rgba(155,185,235,.6)}
+/* Timeline */
+.tl-box{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);padding:24px 28px;
+}
+.tl-title{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--tx-muted);margin-bottom:24px}
+.tl-track{position:relative;height:3px;background:var(--bd);border-radius:2px;margin:44px 0 44px}
+.tl-fill{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#D97706,var(--red) 62%,var(--green-mid));border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.25,.1,.25,1)}
+.tl-nodes{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%)}
+.tl-node{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.tl-dot{width:13px;height:13px;border-radius:50%;border:2.5px solid white;box-shadow:var(--sh-xs)}
+.tl-tip{position:absolute;width:128px;text-align:center;line-height:1.35}
+.tl-tip.up{bottom:18px}
+.tl-tip.dn{top:18px}
+.tl-tip-yr{font-size:.70rem;font-weight:700;margin-bottom:2px}
+.tl-tip-name{font-size:.75rem;font-weight:600;color:var(--tx-primary);margin-bottom:1px}
+.tl-tip-note{font-size:.7rem;color:var(--tx-secondary)}
+
+/* ─────────────────────────────────────────────
+   METHODOLOGY
+───────────────────────────────────────────── */
+.method-steps{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:16px;
+}
+.ms{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);padding:18px 16px;
+  text-align:center;cursor:pointer;
+  transition:var(--ease-md);border-bottom:3px solid transparent;
+}
+.ms:hover{box-shadow:var(--sh-sm)}
+.ms.on{border-bottom-color:var(--blue);background:var(--blue-xlt)}
+.ms-icon{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;margin:0 auto 10px;
+}
+.ms:nth-child(1) .ms-icon{background:#EEF2FF}
+.ms:nth-child(2) .ms-icon{background:var(--blue-xlt)}
+.ms:nth-child(3) .ms-icon{background:var(--teal-lt)}
+.ms:nth-child(4) .ms-icon{background:var(--green-lt)}
+.ms.on .ms-icon{background:rgba(43,87,181,.1)}
+.ms h4{font-size:.83rem;font-weight:700;color:var(--tx-primary);margin-bottom:4px}
+.ms p{font-size:.75rem;color:var(--tx-secondary);line-height:1.45}
+.ms-detail{
+  background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r-lg);
+  padding:20px 22px;display:none;
+}
+.ms-detail.show{display:block}
+.ms-detail h4{font-size:.9rem;font-weight:700;color:var(--tx-primary);margin-bottom:8px}
+.ms-detail p{font-size:.85rem;color:var(--tx-secondary);line-height:1.75}
+.note-bar{
+  margin-top:14px;background:#FFFBEB;border:1px solid #FDE68A;
+  border-radius:var(--r);padding:10px 14px;
+  font-size:.8rem;color:#78350F;display:flex;gap:8px;align-items:flex-start;
+}
+
+/* ─────────────────────────────────────────────
+   STRENGTHS
+───────────────────────────────────────────── */
+.str-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.str-card{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);padding:20px;
+  border-top:3px solid;transition:box-shadow var(--ease);
+}
+.str-card:hover{box-shadow:var(--sh-sm)}
+.str-card:nth-child(1){border-top-color:var(--navy)}
+.str-card:nth-child(2){border-top-color:var(--teal)}
+.str-card:nth-child(3){border-top-color:var(--blue)}
+.str-icon{font-size:1.3rem;margin-bottom:10px}
+.str-card h3{font-size:.92rem;font-weight:700;margin-bottom:6px;color:var(--tx-primary)}
+.str-card .str-sub{font-size:.8rem;color:var(--tx-secondary);margin-bottom:12px;line-height:1.5}
+.str-list{display:flex;flex-direction:column;gap:0}
+.str-li{
+  font-size:.8rem;color:var(--tx-secondary);
+  padding:5px 0 5px 0;
+  border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;gap:6px;
+}
+.str-li:last-child{border-bottom:none;padding-bottom:0}
+.str-li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--bd-md);flex-shrink:0}
+/* Venn */
+.venn-wrap{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r-lg);padding:24px}
+.venn-wrap h4{font-size:.88rem;font-weight:700;color:var(--tx-primary);margin-bottom:16px}
+.gap-note{
+  margin-top:14px;
+  background:var(--red-lt);border:1px solid #FECACA;
+  border-radius:var(--r);padding:10px 16px;
+  font-size:.82rem;color:#991B1B;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.gap-note-icon{flex-shrink:0}
+
+/* ─────────────────────────────────────────────
+   GAP SECTION
+───────────────────────────────────────────── */
+.root-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.rc{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);padding:18px;
+  cursor:pointer;transition:var(--ease-md);
+}
+.rc:hover{box-shadow:var(--sh-sm);transform:translateY(-1px)}
+.rc.sel{border-color:transparent}
+.rc-1.sel{background:var(--red-lt);border-color:#FECACA}
+.rc-2.sel{background:var(--amber-lt);border-color:#FDE68A}
+.rc-3.sel{background:var(--teal-lt);border-color:#A5F3FC}
+.rc-num{font-size:1.4rem;font-weight:800;opacity:.18;line-height:1;margin-bottom:8px}
+.rc-1 .rc-num{color:var(--red)}
+.rc-2 .rc-num{color:#D97706}
+.rc-3 .rc-num{color:var(--teal)}
+.rc h4{font-size:.86rem;font-weight:700;margin-bottom:4px;color:var(--tx-primary)}
+.rc p{font-size:.78rem;color:var(--tx-secondary);margin-bottom:10px;line-height:1.5}
+.rc-badges{display:flex;flex-wrap:wrap;gap:4px}
+/* Before/After */
+.ba-wrap{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:32px;
+}
+.ba-title{
+  padding:12px 18px;background:var(--bg-subtle);
+  border-bottom:1px solid var(--bd);
+  font-size:.8rem;font-weight:700;color:var(--tx-primary);
+}
+.ba-cols{display:grid;grid-template-columns:1fr auto 1fr}
+.ba-col{}
+.ba-col-head{
+  padding:8px 16px;font-size:.7rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.ba-before .ba-col-head{background:var(--red-lt);color:var(--red)}
+.ba-after .ba-col-head{background:var(--green-lt);color:var(--green)}
+.ba-col-body{padding:0}
+.ba-row{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:7px 16px;border-bottom:1px solid var(--bd);
+  font-size:.8rem;
+}
+.ba-row:last-child{border-bottom:none}
+.ba-n{
+  width:28px;flex-shrink:0;font-size:.70rem;font-weight:700;
+  color:var(--tx-muted);padding-top:1px;
+}
+.ba-bad{background:#FFF5F5}
+.ba-bad .ba-n{color:var(--red)}
+.ba-arrow-col{
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;background:var(--bg-subtle);
+  border-left:1px solid var(--bd);border-right:1px solid var(--bd);
+}
+.ba-arr{font-size:1.1rem;color:var(--blue)}
+/* Filter bar */
+.fbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:6px;
+  padding:10px 14px;background:var(--bg-card);
+  border:1px solid var(--bd);border-radius:var(--r-lg);
+  margin-bottom:14px;
+}
+.fbar-lbl{font-size:.72rem;font-weight:700;color:var(--tx-muted);margin-right:2px}
+.fb{
+  font-size:.72rem;font-weight:600;
+  padding:4px 11px;border-radius:var(--r-xl);
+  border:1.5px solid var(--bd);color:var(--tx-secondary);
+  transition:var(--ease);background:white;
+}
+.fb:hover{border-color:var(--bd-md);color:var(--tx-primary)}
+.fb.on{border-color:transparent;color:white}
+.fb[data-f=all].on{background:var(--navy)}
+.fb[data-f=SEGERA].on{background:var(--red)}
+.fb[data-f=MENDESAK].on{background:#D97706}
+.fb[data-f=BERTAHAP].on{background:var(--teal)}
+.fb[data-f=RENDAH].on{background:var(--green-mid)}
+.fbar-ct{margin-left:auto;font-size:.72rem;color:var(--tx-muted)}
+/* Gap cards */
+.gap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gc{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
+  transition:box-shadow var(--ease),transform var(--ease);
+}
+.gc:hover{box-shadow:var(--sh-sm);transform:translateY(-1px)}
+.gc.dim{opacity:.2;pointer-events:none}
+.gc.hl{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue)}
+.gc-top{
+  padding:12px 14px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--bd);
+}
+.gc-code{font-size:.95rem;font-weight:800;color:var(--navy)}
+.gc-body{padding:10px 14px 12px}
+.gc-name{font-size:.94rem;font-weight:700;color:var(--tx-primary);margin-bottom:6px;line-height:1.3}
+.gc-brief{font-size:.79rem;color:var(--tx-secondary);line-height:1.55}
+.gc-foot{
+  padding:8px 14px;border-top:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg-subtle);
+}
+.gc-rct{font-size:.72rem;color:var(--tx-muted)}
+.gc-exp{font-size:.72rem;font-weight:600;color:var(--blue);display:flex;align-items:center;gap:3px}
+.gc-exp svg{transition:transform .25s}
+.gc.open .gc-exp svg{transform:rotate(180deg)}
+.gc-detail{overflow:hidden;height:0;transition:height .3s ease}
+.gc-di{padding:14px;background:#F8FAFF;border-top:1px solid var(--blue-lt)}
+.dl{display:grid;grid-template-columns:76px 1fr;gap:5px 10px;font-size:.8rem;margin-bottom:12px}
+.dl-t{font-weight:600;color:var(--tx-muted);font-size:.72rem;padding-top:1px}
+.dl-d{color:var(--tx-primary);line-height:1.55}
+.dl-imp{color:var(--red);font-style:italic}
+.rl{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.rl-btn{
+  font-size:.72rem;font-weight:600;
+  background:var(--blue-xlt);color:var(--blue);
+  border:1px solid var(--blue-lt);padding:3px 9px;border-radius:var(--r-xl);
+  transition:var(--ease);cursor:pointer;
+}
+.rl-btn:hover{background:var(--blue);color:white}
+.rl-lbl{font-size:.72rem;font-weight:700;color:var(--tx-muted);margin-bottom:5px}
+
+/* ─────────────────────────────────────────────
+   EVIDENCE
+───────────────────────────────────────────── */
+.reg-table{width:100%;border-collapse:collapse;font-size:.81rem}
+.reg-table thead th{
+  background:var(--navy);color:white;
+  font-weight:600;font-size:.72rem;letter-spacing:.04em;
+  padding:10px 14px;text-align:left;
+}
+.reg-table tbody tr{border-bottom:1px solid rgba(255,255,255,.06);transition:background .15s}
+.reg-table tbody tr:last-child{border-bottom:none}
+.reg-table tbody tr:hover{background:rgba(255,255,255,.04)}
+.reg-table td{padding:10px 14px;vertical-align:top;line-height:1.5}
+.reg-table td:first-child{color:rgba(230,240,255,.9)}
+.reg-table td:first-child strong{font-size:.83rem}
+.chip{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:.7rem;font-weight:600;padding:2px 8px;border-radius:var(--r-xl);
+}
+.ch-miss{background:rgba(185,28,28,.2);color:#FCA5A5}
+.ch-part{background:rgba(180,83,9,.2);color:#FCD34D}
+.ch-old{background:rgba(255,255,255,.08);color:rgba(180,200,230,.5)}
+.ev-conclusion{
+  margin-top:16px;padding:14px 18px;border-radius:var(--r-lg);
+  background:rgba(180,83,9,.1);border:1px solid rgba(180,83,9,.3);
+  font-size:.85rem;color:#FCD34D;line-height:1.65;
+}
+
+/* ─────────────────────────────────────────────
+   DJP IMPLICATIONS
+───────────────────────────────────────────── */
+.impl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.impl-card{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);padding:20px;
+  border-left:4px solid;transition:box-shadow var(--ease);
+}
+.impl-card:hover{box-shadow:var(--sh-sm)}
+.impl-card:nth-child(1){border-left-color:var(--navy)}
+.impl-card:nth-child(2){border-left-color:var(--red)}
+.impl-card:nth-child(3){border-left-color:var(--teal)}
+.impl-card h4{font-size:.88rem;font-weight:700;margin-bottom:10px;color:var(--tx-primary)}
+.impl-row{display:flex;align-items:baseline;gap:7px;font-size:.8rem;color:var(--tx-secondary);padding:3px 0}
+.impl-arr{color:var(--blue);font-weight:700;flex-shrink:0}
+/* Penalty strip */
+.penalty-box{
+  background:var(--navy);border-radius:var(--r-lg);
+  padding:20px 22px;margin-bottom:20px;
+}
+.penalty-box-title{
+  font-size:.7rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(160,190,240,.5);
+  margin-bottom:14px;
+}
+.penalty-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.penalty-item{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--r);padding:14px;
+}
+.p-stage{font-size:.7rem;font-weight:600;color:rgba(150,185,235,.55);margin-bottom:5px}
+.p-pct{font-size:1.7rem;font-weight:800;color:white;line-height:1;margin-bottom:4px;letter-spacing:-.02em}
+.p-note{font-size:.7rem;color:rgba(140,175,230,.45);line-height:1.45}
+/* Calculator */
+.calc-box{
+  background:var(--blue-xlt);border:1px solid var(--blue-lt);
+  border-radius:var(--r-lg);padding:20px 22px;
+}
+.calc-box h4{font-size:.88rem;font-weight:700;color:var(--navy);margin-bottom:4px}
+.calc-box .calc-sub{font-size:.8rem;color:var(--tx-secondary);margin-bottom:14px;line-height:1.5}
+.calc-row{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.calc-input{
+  border:1.5px solid var(--bd);border-radius:var(--r);
+  padding:8px 14px;font-size:.9rem;font-family:inherit;
+  width:200px;background:white;transition:var(--ease);
+}
+.calc-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(43,87,181,.1)}
+.calc-clear{
+  font-size:.78rem;color:var(--tx-secondary);
+  padding:7px 14px;border:1px solid var(--bd);
+  border-radius:var(--r-xl);background:white;transition:var(--ease);
+}
+.calc-clear:hover{border-color:var(--red);color:var(--red)}
+.calc-outs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.co{background:white;border:1px solid var(--bd);border-radius:var(--r);padding:12px;text-align:center}
+.co-stage{font-size:.70rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--tx-muted);margin-bottom:5px}
+.co-amt{font-size:1.15rem;font-weight:800;color:var(--red);min-height:26px;display:block}
+.co-note{font-size:.70rem;color:var(--tx-muted);margin-top:3px}
+
+/* ─────────────────────────────────────────────
+   RECOMMENDATIONS
+───────────────────────────────────────────── */
+.hs-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.hs{
+  border-radius:var(--r-lg);padding:18px 20px;
+  cursor:pointer;transition:var(--ease-md);
+}
+.hs.inactive{opacity:.4}
+.hs-qw{background:linear-gradient(135deg,#14532D,var(--green-mid));color:white}
+.hs-mi{background:linear-gradient(135deg,#78350F,#D97706);color:white}
+.hs-lt{background:linear-gradient(135deg,#1E3A8A,var(--blue));color:white}
+.hs h3{font-size:1.9rem;font-weight:800;line-height:1;margin-bottom:3px;letter-spacing:-.04em}
+.hs-lbl{font-size:.70rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:3px}
+.hs-when{font-size:.72rem;opacity:.65;margin-top:8px}
+.hs-pic{font-size:.7rem;opacity:.5;margin-top:2px}
+.rec-fbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:14px}
+.rec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.rcc{
+  background:var(--bg-card);border:1px solid var(--bd);
+  border-radius:var(--r-lg);overflow:hidden;
+  transition:box-shadow var(--ease);
+}
+.rcc:hover{box-shadow:var(--sh-sm)}
+.rcc.dim{opacity:.2}
+.rcc.hl{box-shadow:0 0 0 2px #D97706;border-color:#D97706}
+.rcc-head{padding:12px 14px 0;display:flex;align-items:center;justify-content:space-between}
+.rcc-code{font-size:.92rem;font-weight:800}
+.rcc-code.qw{color:var(--green-mid)}
+.rcc-code.mi{color:#D97706}
+.rcc-code.lt{color:var(--blue)}
+.pdots{display:flex;gap:3px;align-items:center}
+.pd{width:6px;height:6px;border-radius:50%}
+.rcc-body{padding:8px 14px 14px}
+.rcc-action{font-size:.86rem;font-weight:600;color:var(--tx-primary);margin-bottom:5px;line-height:1.4}
+.rcc-out{font-size:.78rem;color:var(--tx-secondary);line-height:1.55;margin-bottom:8px}
+.rcc-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}
+.rcc-pic{font-size:.7rem;color:var(--tx-muted)}
+.rcc-glinks{display:flex;gap:4px;flex-wrap:wrap}
+.rcc-gb{
+  font-size:.70rem;font-weight:600;
+  background:var(--bg-subtle);color:var(--tx-secondary);
+  border:1px solid var(--bd);padding:2px 8px;border-radius:var(--r-xl);
+  cursor:pointer;transition:var(--ease);
+}
+.rcc-gb:hover{background:var(--navy);color:white;border-color:var(--navy)}
+/* IE Matrix */
+.ie-box{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r-lg);padding:22px;margin-bottom:24px}
+.ie-box h4{font-size:.88rem;font-weight:700;color:var(--tx-primary);margin-bottom:14px}
+.ie-wrap{position:relative;padding:0 0 26px 32px}
+.ie-ax-y{
+  position:absolute;left:0;top:0;bottom:26px;
+  display:flex;align-items:center;
+  font-size:.70rem;color:var(--tx-muted);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+}
+.ie-ax-x{position:absolute;bottom:4px;left:32px;right:0;text-align:center;font-size:.70rem;color:var(--tx-muted)}
+.ie-plot{
+  position:relative;height:280px;
+  border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;
+}
+.ie-q{position:absolute;font-size:.70rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:6px 8px;opacity:.55}
+.ie-q1{top:0;right:0;width:50%;height:50%;border-left:1px solid var(--bd);color:var(--green-mid)}
+.ie-q2{top:0;left:0;width:50%;height:50%;color:#D97706}
+.ie-q3{bottom:0;left:0;width:50%;height:50%;border-top:1px solid var(--bd);color:var(--tx-muted)}
+.ie-q4{bottom:0;right:0;width:50%;height:50%;border-left:1px solid var(--bd);border-top:1px solid var(--bd);color:var(--red)}
+.ie-dot{position:absolute;transform:translate(-50%,-50%);cursor:pointer}
+.ie-dot-inner{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.70rem;font-weight:800;color:white;
+  box-shadow:var(--sh-xs);transition:transform .2s;
+}
+.ie-dot:hover .ie-dot-inner{transform:scale(1.3)}
+.ie-tip{
+  position:absolute;top:33px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;font-size:.70rem;
+  background:white;border:1px solid var(--bd);
+  padding:2px 6px;border-radius:var(--r-sm);
+  opacity:0;transition:var(--ease);pointer-events:none;
+  box-shadow:var(--sh-xs);
+}
+.ie-dot:hover .ie-tip{opacity:1}
+.ie-legend{display:flex;gap:16px;margin-top:10px;flex-wrap:wrap}
+.ie-leg-item{display:flex;align-items:center;gap:5px;font-size:.72rem;color:var(--tx-secondary)}
+.ie-leg-dot{width:9px;height:9px;border-radius:50%}
+/* Traceability */
+.trace-sec{margin-top:4px}
+.trace-toggle{
+  font-size:.78rem;font-weight:600;color:var(--blue);
+  padding:7px 14px;border:1.5px solid var(--blue-lt);
+  border-radius:var(--r-xl);background:var(--blue-xlt);
+  transition:var(--ease);margin-bottom:10px;
+}
+.trace-toggle:hover{background:var(--blue);color:white}
+.trace-wrap{display:none;overflow-x:auto}
+.trace-wrap.open{display:block}
+.tt{border-collapse:collapse;font-size:.7rem;min-width:880px}
+.tt th,.tt td{padding:6px 8px;border:1px solid var(--bd);text-align:center}
+.tt th{background:var(--navy);color:white;font-weight:600;white-space:nowrap;font-size:.70rem}
+.tt td:first-child{text-align:left;font-weight:600;background:var(--bg-subtle);white-space:nowrap}
+.tt tr:hover td{background:var(--blue-xlt)}
+.dqw{color:var(--green-mid);font-size:.9rem}
+.dmi{color:#D97706;font-size:.9rem}
+.dlt{color:var(--blue);font-size:.9rem}
+
+/* ─────────────────────────────────────────────
+   TRACKER
+───────────────────────────────────────────── */
+.trk-hdr{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.trk-bar-card{background:var(--bg-card);border:1px solid var(--bd);border-radius:var(--r-lg);padding:14px 16px}
+.trk-bar-top{display:flex;justify-content:space-between;font-size:.78rem;font-weight:600;margin-bottom:7px;color:var(--tx-primary)}
+.trk-bar-bg{height:5px;background:var(--bd);border-radius:3px;overflow:hidden}
+.trk-bar-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.kb-head{
+  padding:10px 14px;font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:white;border-radius:var(--r-lg) var(--r-lg) 0 0;text-align:center;
+}
+.kh-qw{background:var(--green-mid)}
+.kh-mi{background:#D97706}
+.kh-lt{background:var(--blue)}
+.kb-body{
+  background:var(--bg-subtle);border:1px solid var(--bd);
+  border-top:none;border-radius:0 0 var(--r-lg) var(--r-lg);
+  padding:10px;display:flex;flex-direction:column;gap:8px;min-height:160px;
+}
+.tk{
+  background:white;border:1px solid var(--bd);border-left:3px solid;
+  border-radius:var(--r);padding:10px 12px;transition:var(--ease-md);
+}
+.tk.belum{border-left-color:var(--bd-md)}
+.tk.proses{border-left-color:#D97706;background:#FFFBEB}
+.tk.selesai{border-left-color:var(--green-mid);background:#F0FDF4}
+.tk-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.tk-code{font-size:.8rem;font-weight:800;color:var(--navy)}
+.tk-action{font-size:.78rem;color:var(--tx-primary);margin-bottom:4px;line-height:1.4}
+.tk-pic{font-size:.7rem;color:var(--tx-muted);margin-bottom:7px}
+.tk-btns{display:flex;gap:4px}
+.tk-btn{
+  font-size:.70rem;font-weight:600;
+  padding:3px 8px;border-radius:var(--r-xl);
+  border:1.5px solid var(--bd);color:var(--tx-muted);
+  background:white;transition:var(--ease);
+}
+.tk-btn.on-b{background:var(--bd);color:var(--tx-primary);border-color:var(--bd)}
+.tk-btn.on-p{background:#D97706;color:white;border-color:#D97706}
+.tk-btn.on-s{background:var(--green-mid);color:white;border-color:var(--green-mid)}
+.trk-reset{
+  font-size:.78rem;color:var(--tx-muted);
+  padding:7px 16px;border:1px solid var(--bd);
+  border-radius:var(--r-xl);transition:var(--ease);
+  margin-top:12px;
+}
+.trk-reset:hover{border-color:var(--red);color:var(--red)}
+
+/* ─────────────────────────────────────────────
+   BADGE SYSTEM  (unified)
+───────────────────────────────────────────── */
+.badge{
+  display:inline-flex;align-items:center;
+  font-size:.70rem;font-weight:700;
+  padding:2px 8px;border-radius:var(--r-xl);
+  letter-spacing:.03em;
+}
+.b-red{background:var(--red);color:white}
+.b-amber{background:#D97706;color:white}
+.b-teal{background:var(--teal);color:white}
+.b-green{background:var(--green-mid);color:white}
+.b-blue{background:var(--blue);color:white}
+.b-navy{background:var(--navy);color:white}
+.b-gray{background:var(--bd);color:var(--tx-secondary)}
+
+/* ─────────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────────── */
+#footer{
+  background:var(--navy-dk);color:rgba(175,200,240,.65);
+  padding:52px 48px 30px;
+}
+.ft-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px;margin-bottom:32px}
+.ft-label{font-size:.70rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(130,160,210,.35);margin-bottom:12px}
+#footer h3{font-size:.95rem;font-weight:700;color:white;margin-bottom:4px}
+#footer p,#footer li{font-size:.82rem;line-height:1.7}
+.ft-disc{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--r);padding:10px 14px;
+  font-size:.75rem;color:rgba(130,160,210,.5);
+  margin-top:10px;line-height:1.65;
+}
+.ft-qs{display:flex;flex-direction:column;gap:8px}
+.ft-qs li{font-size:.8rem;padding-left:14px;position:relative;line-height:1.6}
+.ft-qs li::before{content:'→';position:absolute;left:0;color:rgba(100,140,200,.4)}
+.ft-docs li{display:flex;align-items:center;gap:7px;font-size:.8rem}
+.ft-docs li::before{content:'›';color:rgba(100,140,200,.4)}
+#footer .ft-bottom{
+  border-top:1px solid rgba(255,255,255,.06);
+  padding-top:18px;font-size:.72rem;
+  color:rgba(130,160,210,.3);text-align:center;
+}
+
+/* ─────────────────────────────────────────────
+   ANIMATIONS  (minimal)
+───────────────────────────────────────────── */
+@keyframes ringIn{0%{box-shadow:0 0 0 0 rgba(43,87,181,.4)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.ring-in{animation:ringIn 1.4s 2}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media(max-width:1080px){
+  :root{--sidebar-w:200px}
+  .sec{padding:52px 36px}
+  #hero{padding:56px 36px}
+  .gap-grid,.rec-grid,.str-grid{grid-template-columns:repeat(2,1fr)}
+  .tb-actions{gap:4px}
+  .tb-btn{padding:4px 10px;font-size:.68rem}
+}
+@media(max-width:900px){
+  #sidebar{display:none;position:fixed;left:0;top:var(--topbar-h);bottom:0;z-index:199;width:272px;box-shadow:var(--sh-lg)}
+  #sidebar.open{display:flex}
+  #hbg{display:flex}
+  .sec{padding:44px 24px}
+  #hero{padding:48px 24px}
+  .hero-grid,.ctx-grid,.str-grid,.impl-grid,.rec-grid,.metric-row,.hs-row,.root-row,.gap-grid,.kanban,.trk-hdr,.calc-outs,.penalty-cols,.ft-grid{grid-template-columns:1fr}
+  .method-steps{grid-template-columns:1fr 1fr;gap:10px}
+  .ba-cols{grid-template-columns:1fr}
+  .ba-arrow-col{display:none}
+  /* Hero panel: compact horizontal strip instead of hidden — preserves 3/9/15 value prop */
+  .hero-panel{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:rgba(255,255,255,.08);border-radius:var(--r-lg);
+    overflow:hidden;margin-top:28px;border:1px solid rgba(255,255,255,.1);
+  }
+  .hp-head{display:none}
+  .hp-stats{display:contents}
+  .hp-stat{flex-direction:column;align-items:center;text-align:center;padding:14px 8px;gap:4px;background:rgba(255,255,255,.03);border-bottom:none}
+  .hp-num{width:auto;font-size:1.9rem}
+  .hp-info{}
+  .hp-label{font-size:.7rem}
+  .hp-desc{display:none}
+  #footer{padding:40px 24px 24px}
+  .tb-progress{display:none}
+}
+@media(max-width:640px){
+  .gap-grid,.rec-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<nav id="topbar">
+  <div class="tb-inner">
+    <div class="tb-brand">MKN4103 · Improvement Note</div>
+    <div class="tb-sep"></div>
+    <div class="tb-progress">
+      <span class="tb-pg-label">Progres membaca</span>
+      <div class="tb-pg-track"><div class="tb-pg-fill" id="pgFill"></div></div>
+    </div>
+    <div class="tb-actions">
+      <button class="tb-btn" onclick="go('section-gap')">⚠ 9 Gap</button>
+      <button class="tb-btn" onclick="go('section-rekomendasi')">💡 Rekomendasi</button>
+      <button class="tb-btn" onclick="go('section-tracker')">Tracker</button>
+    </div>
+    <button id="hbg" onclick="toggleSb()" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<button id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Ke atas">↑</button>
+
+<div id="wrap">
+
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div class="sb-section">Dokumen</div>
+  <button class="sb-link" onclick="go('hero')"><span class="sb-icon">🏠</span>Beranda</button>
+  <button class="sb-link" onclick="go('section-exec')"><span class="sb-icon">📋</span>Ringkasan Eksekutif</button>
+  <div class="sb-section">Analisis</div>
+  <button class="sb-link" onclick="go('section-konteks')"><span class="sb-icon">📡</span>Mengapa Sekarang</button>
+  <button class="sb-link" onclick="go('section-analisis')"><span class="sb-icon">🔬</span>Metodologi</button>
+  <button class="sb-link" onclick="go('section-kekuatan')"><span class="sb-icon">✅</span>Kekuatan RPS</button>
+  <div class="sb-section">Temuan</div>
+  <button class="sb-link" onclick="go('section-gap')">
+    <span class="sb-icon">⚠️</span>Peta 9 Gap
+    <span class="sb-badge">9</span>
+  </button>
+  <button class="sb-link" onclick="go('section-bukti')"><span class="sb-icon">📅</span>Kronologi Bukti</button>
+  <button class="sb-link" onclick="go('section-implikasi')"><span class="sb-icon">🏛️</span>Relevansi DJP</button>
+  <div class="sb-section">Solusi</div>
+  <button class="sb-link" onclick="go('section-rekomendasi')"><span class="sb-icon">💡</span>15 Rekomendasi</button>
+  <button class="sb-link" onclick="go('section-tracker')"><span class="sb-icon">📊</span>Progress Tracker</button>
+  <div class="sb-footer">
+    <div class="sb-pg-title">STATUS IMPLEMENTASI</div>
+    <div class="sb-bars" id="sbBars"></div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+<!-- ══════════ HERO ══════════ -->
+<section id="hero">
+  <div class="hero-grid">
+    <!-- Left column -->
+    <div class="hero-left">
+      <div class="hero-tag"><span class="hero-dot"></span>Improvement Note · PKN STAN · Magang DJP 2025</div>
+      <h1 class="hero-h1">RPS MKN4103<br><em>Penagihan &amp; Upaya Hukum</em></h1>
+      <p class="hero-byline">Dio Nanda Pratama Hidayat &nbsp;·&nbsp; NPM 4121220161</p>
+      <p class="hero-desc">9 gap teridentifikasi. 15 rekomendasi bertahap. 6 dapat dimulai tanpa perubahan kurikulum.</p>
+      <!-- Scope: what this doc is / is not -->
+      <div class="hero-scope">
+        <div class="hero-scope-item"><span class="sc-icon sci-no">✕</span>Bukan evaluasi kualitas pengajaran</div>
+        <div class="hero-scope-item"><span class="sc-icon sci-no">✕</span>Bukan RPS pengganti</div>
+        <div class="hero-scope-item"><span class="sc-icon sci-yes">✓</span>Peta gap berbasis dokumen resmi</div>
+        <div class="hero-scope-item"><span class="sc-icon sci-yes">✓</span>Terbuka untuk koreksi pengampu</div>
+      </div>
+      <a href="javascript:void(0)" class="hero-cta" onclick="go('section-exec')">Baca Ringkasan Eksekutif ↓</a>
+      <div class="hero-strip">
+        <span>📄 RPS MKN4103 &amp; MKN4126</span>
+        <span>📅 Ditetapkan 17 Maret 2025</span>
+        <span>🏛️ Konteks: DJP Coretax 2025</span>
+      </div>
+    </div>
+    <!-- Right column: stat panel -->
+    <div class="hero-panel">
+      <div class="hp-head">Ringkasan Dokumen</div>
+      <div class="hp-stats">
+        <div class="hp-stat">
+          <div class="hp-num" data-t="3" style="color:#93C5FD">0</div>
+          <div class="hp-info">
+            <div class="hp-label">Akar Masalah Sistemik</div>
+            <div class="hp-desc">Sumber dari seluruh 9 gap — perbaiki akar, tutup semua gap sekaligus</div>
+          </div>
+        </div>
+        <div class="hp-stat">
+          <div class="hp-num" data-t="9" style="color:#FCA5A5">0</div>
+          <div class="hp-info">
+            <div class="hp-label">Gap Teridentifikasi</div>
+            <div class="hp-desc">Dari inversi sekuens hingga PMK yang absen 75+ hari</div>
+          </div>
+        </div>
+        <div class="hp-stat">
+          <div class="hp-num" data-t="15" style="color:#86EFAC">0</div>
+          <div class="hp-info">
+            <div class="hp-label">Rekomendasi Perbaikan</div>
+            <div class="hp-desc">6 Quick Wins dapat dimulai tanpa perubahan kurikulum</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ EXECUTIVE SUMMARY ══════════ -->
+<section id="section-exec" class="sec sec-white">
+  <div class="sh">
+    <div class="sh-eyebrow">Ringkasan Eksekutif</div>
+    <h2>Diagnosis lengkap, solusi konkret, dapat dimulai segera</h2>
+    <p class="lede">RPS MKN4103 memiliki fondasi yang kuat. Yang perlu diperbarui adalah konten, sekuens, dan mekanisme koordinasi — bukan struktur kurikulum secara keseluruhan.</p>
+  </div>
+  <div class="metric-row">
+    <div class="metric-card mc-blue">
+      <div class="metric-num">3</div>
+      <h4>Akar Masalah Sistemik</h4>
+      <p>Bukan 9 masalah terpisah. Memperbaiki ketiga akar ini lebih efisien daripada menutup gap satu per satu.</p>
+    </div>
+    <div class="metric-card mc-amber">
+      <div class="metric-num">9</div>
+      <h4>Gap Terdokumentasi</h4>
+      <p>Dari inversi sekuens materi hingga absennya PMK yang sudah berlaku 75+ hari sebelum RPS ditetapkan.</p>
+    </div>
+    <div class="metric-card mc-green">
+      <div class="metric-num">15</div>
+      <h4>Rekomendasi Bertahap</h4>
+      <p>6 Quick Wins dapat dimulai segera tanpa tambahan SKS, perubahan kurikulum, atau hambatan institusional.</p>
+    </div>
+  </div>
+  <div class="kf-list">
+    <div class="kf-item kf-primary">
+      <span class="kf-icon">🔑</span>
+      <div>
+        <div class="kf-title">Temuan Utama</div>
+        <div class="kf-text">PMK 81/2024 (Coretax) berlaku efektif 1 Januari 2025. RPS ditetapkan 17 Maret 2025 — 75 hari kemudian. Regulasi sudah ada; yang belum ada adalah mekanisme pembaruan. Ini bukan masalah informasi, ini masalah sistem.</div>
+      </div>
+    </div>
+    <div class="kf-item kf-secondary">
+      <span class="kf-icon">⚡</span>
+      <div>
+        <div class="kf-title">Pesan untuk Mentor &amp; Pembimbing Lapangan</div>
+        <div class="kf-text">Dokumen ini bukan daftar keluhan. Ini adalah peta diagnosis lengkap dengan 15 solusi yang telah diprioritaskan, dilengkapi Progress Tracker yang dapat digunakan langsung untuk memantau implementasi.</div>
+      </div>
+    </div>
+  </div>
+  <div class="qa-bar">
+    <span class="qa-icon">🚀</span>
+    <div class="qa-text">
+      <strong>Langkah pertama yang bisa dimulai sekarang</strong>
+      <span>Buka file RPS, tambahkan PMK 81/2024, PMK 118/2024, dan PMK 61/2023 ke daftar pustaka. Selesai dalam kurang dari 10 menit — tanpa mengubah satu topik pun.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ S1: KONTEKS ══════════ -->
+<section id="section-konteks" class="sec sec-tint">
+  <div class="sh">
+    <div class="sh-eyebrow">S1 — Konteks</div>
+    <h2>Dua gelombang perubahan dalam 24 bulan</h2>
+    <p class="lede">DJP mengalami reformasi prosedural dan transformasi digital secara bersamaan. RPS yang berlaku belum sepenuhnya mencerminkan kedua perubahan tersebut.</p>
+  </div>
+  <div class="alert-callout">
+    <span class="ac-icon">⏰</span>
+    <div class="ac-text"><strong>Pertanyaan kunci:</strong> Apakah RPS yang berlaku hari ini sudah mencerminkan DJP hari ini? PMK 81/2024 berlaku 1 Januari 2025. RPS ditetapkan 17 Maret 2025. Gap bukan karena regulasi belum terbit — gap karena tidak ada mekanisme pembaruan.</div>
+  </div>
+  <div class="ctx-grid">
+    <div class="ctx-box ctx-light">
+      <h4>📋 Reformasi Prosedural</h4>
+      <div class="ctx-entry">
+        <div class="ctx-entry-title">PMK 61/2023</div>
+        <div class="ctx-entry-desc">Digunakan dalam perkuliahan, namun tidak tercantum dalam daftar pustaka resmi RPS. Inkonsistensi antara praktik dan dokumentasi.</div>
+      </div>
+      <div class="ctx-entry">
+        <div class="ctx-entry-title">PMK 118/2024</div>
+        <div class="ctx-entry-desc">Menyempurnakan tata cara keberatan — berkaitan langsung dengan beberapa Sub-CPMK, namun belum diakomodasi dalam materi atau pustaka.</div>
+      </div>
+    </div>
+    <div class="ctx-box ctx-dark-box">
+      <h4>⚡ Transformasi Digital</h4>
+      <div class="ctx-entry">
+        <div class="ctx-entry-title">PMK 81/2024 / Coretax</div>
+        <div class="ctx-entry-desc">Berlaku efektif 1 Januari 2025. Mengotomasi seluruh alur administrasi perpajakan DJP: TAM, Surat Teguran, Surat Paksa, pemblokiran elektronik, keberatan digital.</div>
+      </div>
+      <div class="ctx-entry">
+        <div class="ctx-entry-title">RPS Ditetapkan: 17 Maret 2025</div>
+        <div class="ctx-entry-desc" style="color:#FCD34D"><strong style="color:#FCD34D">75+ hari setelah Coretax berlaku.</strong> Seluruh regulasi sudah ada — belum masuk ke dokumen resmi RPS.</div>
+      </div>
+    </div>
+  </div>
+  <!-- Timeline -->
+  <div class="tl-box">
+    <div class="tl-title">Kronologi: Regulasi vs. Penetapan RPS</div>
+    <div class="tl-track" id="tlTrack">
+      <div class="tl-fill" id="tlFill"></div>
+      <div class="tl-nodes">
+        <div class="tl-node" style="left:10%">
+          <div class="tl-dot" style="background:#D97706"></div>
+          <div class="tl-tip up" style="left:-64px">
+            <div class="tl-tip-yr" style="color:#D97706">2023</div>
+            <div class="tl-tip-name">PMK 61/2023</div>
+            <div class="tl-tip-note">Dipakai, tak terdaftar</div>
+          </div>
+        </div>
+        <div class="tl-node" style="left:38%">
+          <div class="tl-dot" style="background:#D97706"></div>
+          <div class="tl-tip up" style="left:-64px">
+            <div class="tl-tip-yr" style="color:#D97706">2024</div>
+            <div class="tl-tip-name">PMK 118/2024</div>
+            <div class="tl-tip-note">Belum diakomodasi</div>
+          </div>
+        </div>
+        <div class="tl-node" style="left:66%">
+          <div class="tl-dot" style="background:var(--red)"></div>
+          <div class="tl-tip dn" style="left:-64px">
+            <div class="tl-tip-yr" style="color:var(--red)">1 Jan 2025</div>
+            <div class="tl-tip-name">PMK 81/2024</div>
+            <div class="tl-tip-note">Coretax berlaku, belum di RPS</div>
+          </div>
+        </div>
+        <div class="tl-node" style="left:92%">
+          <div class="tl-dot" style="background:var(--green-mid)"></div>
+          <div class="tl-tip dn" style="left:-64px">
+            <div class="tl-tip-yr" style="color:var(--green-mid)">17 Mar 2025</div>
+            <div class="tl-tip-name">RPS Ditetapkan</div>
+            <div class="tl-tip-note">75+ hari setelah PMK 81</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ S2: METODOLOGI ══════════ -->
+<section id="section-analisis" class="sec sec-white">
+  <div class="sh">
+    <div class="sh-eyebrow">S2 — Metodologi</div>
+    <h2>Empat tahap analisis — klik untuk detail</h2>
+    <p class="lede">Pendekatan sistematis yang dapat direplikasi. Temuan bersumber dari dokumen resmi, bukan asumsi atau opini.</p>
+  </div>
+  <div class="method-steps" id="mSteps">
+    <div class="ms on" onclick="showMs(0,this)"><div class="ms-icon">📋</div><h4>Foundation Audit</h4><p>Inventarisasi seluruh komponen RPS</p></div>
+    <div class="ms" onclick="showMs(1,this)"><div class="ms-icon">🔍</div><h4>Existing vs Expected</h4><p>Pemetaan 6 dimensi analisis</p></div>
+    <div class="ms" onclick="showMs(2,this)"><div class="ms-icon">⚠️</div><h4>Gap Analysis</h4><p>Identifikasi 9 gap &amp; akarnya</p></div>
+    <div class="ms" onclick="showMs(3,this)"><div class="ms-icon">💡</div><h4>Rekomendasi</h4><p>15 solusi dalam 3 horizon</p></div>
+  </div>
+  <div id="msDetail"></div>
+  <div class="note-bar">
+    <span>⚠</span>
+    <span>Analisis dilakukan oleh satu evaluator (mahasiswa magang) tanpa triangulasi. Bertumpu pada dokumen RPS, bukan praktik aktual. <strong>Seluruh temuan terbuka untuk dikoreksi bersama dosen pengampu.</strong></span>
+  </div>
+</section>
+
+<!-- ══════════ S3: KEKUATAN ══════════ -->
+<section id="section-kekuatan" class="sec sec-tint">
+  <div class="sh">
+    <div class="sh-eyebrow">S3 — Temuan: Kekuatan</div>
+    <h2>Yang sudah bekerja dengan baik</h2>
+    <p class="lede">Rekomendasi tidak mengganti fondasi. Yang perlu diperbarui adalah konten dan koordinasi — bukan arsitektur dasar RPS.</p>
+  </div>
+  <div class="str-grid">
+    <div class="str-card">
+      <div class="str-icon">📐</div>
+      <h3>Struktur Konsisten</h3>
+      <p class="str-sub">Rantai capaian terdokumentasi dan terlacak secara vertikal.</p>
+      <div class="str-li">6 CPL → 5 CPMK → 16 Sub-CPMK</div>
+      <div class="str-li">Matriks keterkaitan tersusun sistematis</div>
+      <div class="str-li">Indikator penilaian terukur dan spesifik</div>
+    </div>
+    <div class="str-card">
+      <div class="str-icon">🎯</div>
+      <h3>Metode Pembelajaran Aktif</h3>
+      <p class="str-sub">Variasi metode mencerminkan orientasi berbasis kompetensi.</p>
+      <div class="str-li">Problem-Based Learning (PBL)</div>
+      <div class="str-li">Case Method</div>
+      <div class="str-li">Studi Lapangan</div>
+      <div class="str-li">Project-Based Learning</div>
+    </div>
+    <div class="str-card">
+      <div class="str-icon">🔗</div>
+      <h3>Desain Berpasangan Tepat</h3>
+      <p class="str-sub">Ekosistem MKN4103–MKN4126 dirancang sebagai satu kesatuan.</p>
+      <div class="str-li">Teori (2 SKS) + Praktikum (1 SKS)</div>
+      <div class="str-li">6 CPL dan 16 Sub-CPMK identik</div>
+      <div class="str-li">Ditetapkan bersamaan: 17 Maret 2025</div>
+    </div>
+  </div>
+  <div class="venn-wrap">
+    <h4>Ekosistem Pembelajaran Berpasangan</h4>
+    <svg viewBox="0 0 600 150" style="width:100%;max-width:540px;height:auto;display:block;margin:0 auto" role="img" aria-label="Venn diagram MKN4103 dan MKN4126">
+      <circle cx="205" cy="75" r="70" fill="rgba(26,43,94,.08)" stroke="#1A2B5E" stroke-width="1.5"/>
+      <circle cx="395" cy="75" r="70" fill="rgba(14,116,144,.08)" stroke="#0E7490" stroke-width="1.5"/>
+      <clipPath id="cl1"><circle cx="205" cy="75" r="70"/></clipPath>
+      <circle cx="395" cy="75" r="70" fill="rgba(43,87,181,.15)" clip-path="url(#cl1)" stroke="none"/>
+      <text x="138" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="#1A2B5E">MKN4103</text>
+      <text x="138" y="66" text-anchor="middle" font-size="10" fill="#1A2B5E">Teori · 2 SKS</text>
+      <text x="138" y="83" text-anchor="middle" font-size="9.5" fill="#64748B">Konseptual &amp; Analitis</text>
+      <text x="300" y="63" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B57B5">6 CPL Identik</text>
+      <text x="300" y="77" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B57B5">5 CPMK Identik</text>
+      <text x="300" y="91" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2B57B5">16 Sub-CPMK</text>
+      <text x="462" y="50" text-anchor="middle" font-size="12" font-weight="700" fill="#0E7490">MKN4126</text>
+      <text x="462" y="66" text-anchor="middle" font-size="10" fill="#0E7490">Praktikum · 1 SKS</text>
+      <text x="462" y="83" text-anchor="middle" font-size="9.5" fill="#64748B">Penugasan Terstruktur</text>
+    </svg>
+    <div class="gap-note">
+      <span class="gap-note-icon">⚠️</span>
+      <span><strong>Gap Koordinasi:</strong> Mekanisme sinkronisasi skenario kasus, pembagian Sub-CPMK, dan koordinasi antar dosen belum terdokumentasi dalam RPS.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ S4: GAP ══════════ -->
+<section id="section-gap" class="sec sec-white">
+  <div class="sh">
+    <div class="sh-eyebrow">S4 — Peta Gap</div>
+    <h2>Sembilan gap, tiga akar sistemik</h2>
+    <p class="lede">Klik kartu akar untuk menyoroti gap yang bersumber darinya. Klik kartu gap untuk detail, referensi, dan rekomendasi penutup.</p>
+  </div>
+  <!-- Root causes -->
+  <div class="root-row">
+    <div class="rc rc-1" onclick="filterByRoot(0,this)">
+      <div class="rc-num">01</div>
+      <h4>Sistematika Peraturan</h4>
+      <p>RPS mengikuti urutan pasal, bukan alur proses bisnis nyata DJP (taxpayer journey).</p>
+      <div class="rc-badges"><span class="badge b-red">G1</span><span class="badge b-red">G7</span><span class="badge b-red">G8</span></div>
+    </div>
+    <div class="rc rc-2" onclick="filterByRoot(1,this)">
+      <div class="rc-num">02</div>
+      <h4>Tanpa Mekanisme Pembaruan</h4>
+      <p>Tidak ada SOP pembaruan regulasi berkala dalam siklus penyusunan RPS.</p>
+      <div class="rc-badges"><span class="badge b-amber">G2</span><span class="badge b-amber">G9</span></div>
+    </div>
+    <div class="rc rc-3" onclick="filterByRoot(2,this)">
+      <div class="rc-num">03</div>
+      <h4>Tanpa Verifikasi Kesesuaian</h4>
+      <p>Metode pembelajaran tercantum, tetapi instrumen pendukung tidak diverifikasi ketersediaannya.</p>
+      <div class="rc-badges"><span class="badge b-teal">G3</span><span class="badge b-teal">G4</span><span class="badge b-teal">G5</span><span class="badge b-teal">G6</span></div>
+    </div>
+  </div>
+  <p style="font-size:.8rem;color:var(--tx-muted);text-align:center;margin-bottom:32px;font-style:italic">Memperbaiki tiga akar ini lebih efisien daripada menutup 9 gap satu per satu.</p>
+  <!-- Before/After sekuens -->
+  <div class="ba-wrap">
+    <div class="ba-title">Ilustrasi G1 — Inversi Sekuens: Existing vs. Recommended</div>
+    <div class="ba-cols">
+      <div class="ba-col ba-before">
+        <div class="ba-col-head">⚠ Existing RPS</div>
+        <div class="ba-col-body">
+          <div class="ba-row"><span class="ba-n">1–3</span><span>Piutang Negara &amp; Jaminan</span></div>
+          <div class="ba-row ba-bad"><span class="ba-n">4–7</span><span style="color:var(--red);font-weight:600">Upaya Hukum ⚠ (sebelum penagihan aktif)</span></div>
+          <div class="ba-row ba-bad"><span class="ba-n">8–9</span><span style="color:var(--red);font-weight:600">Kepailitan ⚠ (sebelum penyitaan)</span></div>
+          <div class="ba-row"><span class="ba-n">10–13</span><span>Penagihan Aktif &amp; Penyitaan</span></div>
+          <div class="ba-row"><span class="ba-n">14</span><span>Studi Lapangan</span></div>
+        </div>
+      </div>
+      <div class="ba-arrow-col"><div class="ba-arr">→</div></div>
+      <div class="ba-col ba-after">
+        <div class="ba-col-head">✓ Recommended (Taxpayer Journey)</div>
+        <div class="ba-col-body">
+          <div class="ba-row"><span class="ba-n">1</span><span style="font-weight:600">SKP &amp; Penetapan Piutang</span></div>
+          <div class="ba-row"><span class="ba-n">2</span><span style="font-weight:600">Penagihan Aktif (ST → SP → Sita)</span></div>
+          <div class="ba-row"><span class="ba-n">3</span><span style="font-weight:600">Upaya Hukum Administratif</span></div>
+          <div class="ba-row"><span class="ba-n">4</span><span style="font-weight:600">Litigasi (Banding, Gugatan, PK)</span></div>
+          <div class="ba-row"><span class="ba-n">5</span><span style="font-weight:600">Penatausahaan &amp; Coretax</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Filter + cards -->
+  <div class="fbar">
+    <span class="fbar-lbl">Filter:</span>
+    <button class="fb on" data-f="all" onclick="fGaps('all',this)">Semua</button>
+    <button class="fb" data-f="SEGERA" onclick="fGaps('SEGERA',this)">🔴 Segera</button>
+    <button class="fb" data-f="MENDESAK" onclick="fGaps('MENDESAK',this)">🟠 Mendesak</button>
+    <button class="fb" data-f="BERTAHAP" onclick="fGaps('BERTAHAP',this)">🟡 Bertahap</button>
+    <button class="fb" data-f="RENDAH" onclick="fGaps('RENDAH',this)">🟢 Rendah</button>
+    <span class="fbar-ct" id="gCt">9 dari 9 gap</span>
+  </div>
+  <div class="gap-grid" id="gapGrid"></div>
+</section>
+
+<!-- ══════════ S5: BUKTI ══════════ -->
+<section id="section-bukti" class="sec sec-dark">
+  <div class="sh">
+    <div class="sh-eyebrow">S5 — Bukti Kronologis</div>
+    <h2>Gap regulasi bisa dicegah</h2>
+    <p class="lede">Seluruh PMK yang absen sudah berlaku sebelum RPS ditandatangani. Ini bukan keterlambatan informasi — ini ketiadaan mekanisme pembaruan.</p>
+  </div>
+  <div style="overflow-x:auto;border-radius:var(--r-lg);overflow:hidden">
+    <table class="reg-table">
+      <thead>
+        <tr>
+          <th>Regulasi</th>
+          <th>Berlaku Sejak</th>
+          <th>Status di RPS</th>
+          <th>Substansi &amp; Relevansi</th>
+          <th>Tindakan</th>
+        </tr>
+      </thead>
+      <tbody id="regBody"></tbody>
+    </table>
+  </div>
+  <div class="ev-conclusion">
+    <strong>Kesimpulan:</strong> Tidak ada alasan temporal untuk gap ini. Ketiga PMK kunci sudah berlaku rata-rata 2–24 bulan sebelum RPS ditetapkan tanggal 17 Maret 2025. Solusi sistemik: SOP pembaruan regulasi dalam siklus PPEPP (Rekomendasi LT3).
+  </div>
+</section>
+
+<!-- ══════════ S6: IMPLIKASI DJP ══════════ -->
+<section id="section-implikasi" class="sec sec-white">
+  <div class="sh">
+    <div class="sh-eyebrow">S6 — Relevansi DJP</div>
+    <h2>Apa artinya ini bagi lulusan yang masuk DJP?</h2>
+    <p class="lede">Tiga hal yang belum diajarkan dalam RPS — padahal ketiganya adalah realitas kerja harian fiskus.</p>
+  </div>
+  <div class="impl-grid">
+    <div class="impl-card">
+      <h4>⚖️ Interlock Keberatan &amp; Penagihan</h4>
+      <div class="impl-row"><span class="impl-arr">→</span><span>Keberatan resmi menangguhkan penagihan aktif (Pasal 25(7) KUP)</span></div>
+      <div class="impl-row"><span class="impl-arr">→</span><span>Keputusan harian fiskus — belum ada di RPS</span></div>
+      <div class="impl-row"><span class="impl-arr">→</span><span>Coretax mengotomasi interlock ini secara real-time</span></div>
+    </div>
+    <div class="impl-card">
+      <h4>💰 Konsekuensi Finansial Sengketa</h4>
+      <div class="impl-row"><span class="impl-arr">→</span><span><strong>+30%</strong> jika keberatan ditolak (Ps. 25(9) KUP)</span></div>
+      <div class="impl-row"><span class="impl-arr">→</span><span><strong>+60%</strong> jika banding ditolak (Ps. 27(5d) KUP)</span></div>
+      <div class="impl-row"><span class="impl-arr">→</span><span><strong>Lunasi 50%</strong> sebelum banding (Ps. 36(4) UU PP)</span></div>
+    </div>
+    <div class="impl-card">
+      <h4>💻 Coretax sebagai Sistem Kerja Nyata</h4>
+      <div class="impl-row"><span class="impl-arr">→</span><span>Platform utama DJP sejak 1 Januari 2025</span></div>
+      <div class="impl-row"><span class="impl-arr">→</span><span>TAM, ST, SP, pemblokiran — semuanya terotomasi</span></div>
+      <div class="impl-row"><span class="impl-arr">→</span><span>Keberatan digital terpusat di satu platform</span></div>
+    </div>
+  </div>
+  <!-- Penalty visual -->
+  <div class="penalty-box">
+    <div class="penalty-box-title">Tangga Konsekuensi Finansial Sengketa Pajak</div>
+    <div class="penalty-cols">
+      <div class="penalty-item">
+        <div class="p-stage">Keberatan Ditolak</div>
+        <div class="p-pct">+30%</div>
+        <div class="p-note">dari pokok pajak · Pasal 25(9) KUP · Pengajuan menangguhkan penagihan sementara</div>
+      </div>
+      <div class="penalty-item">
+        <div class="p-stage">Syarat Sebelum Banding</div>
+        <div class="p-pct">50%</div>
+        <div class="p-note">harus dilunasi terlebih dahulu · Pasal 36(4) UU Pengadilan Pajak</div>
+      </div>
+      <div class="penalty-item">
+        <div class="p-stage">Banding Ditolak</div>
+        <div class="p-pct">+60%</div>
+        <div class="p-note">dari pokok pajak · Pasal 27(5d) KUP · Konsekuensi terbesar dalam jalur sengketa</div>
+      </div>
+    </div>
+  </div>
+  <!-- Calculator -->
+  <div class="calc-box">
+    <h4>🧮 Kalkulator Konsekuensi Finansial</h4>
+    <p class="calc-sub">Masukkan pokok pajak untuk menghitung besaran konsekuensi di setiap tahap sengketa secara otomatis.</p>
+    <div class="calc-row">
+      <input class="calc-input" id="cIn" type="text" placeholder="Rp 0" oninput="doCalc(this.value)">
+      <button class="calc-clear" onclick="clrCalc()">Hapus</button>
+    </div>
+    <div class="calc-outs">
+      <div class="co"><div class="co-stage">Keberatan Ditolak</div><span class="co-amt" id="c30">—</span><div class="co-note">30% · Ps. 25(9) KUP</div></div>
+      <div class="co"><div class="co-stage">Syarat Banding</div><span class="co-amt" id="c50">—</span><div class="co-note">50% dilunasi · Ps. 36(4) UU PP</div></div>
+      <div class="co"><div class="co-stage">Banding Ditolak</div><span class="co-amt" id="c60">—</span><div class="co-note">60% · Ps. 27(5d) KUP</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ S7: REKOMENDASI ══════════ -->
+<section id="section-rekomendasi" class="sec sec-tint">
+  <div class="sh">
+    <div class="sh-eyebrow">S7 — Rekomendasi</div>
+    <h2>15 rekomendasi · 3 horizon · 1 roadmap</h2>
+    <p class="lede">Klik horizon untuk memfilter. Klik badge gap pada kartu rekomendasi untuk langsung melihat gap yang ditutup.</p>
+  </div>
+  <div class="hs-row">
+    <div class="hs hs-qw" onclick="fH('QW',this)">
+      <div class="hs-lbl">Quick Wins</div>
+      <h3>6</h3>
+      <div class="hs-when">Revisi RPS terdekat</div>
+      <div class="hs-pic">PIC: Dosen Koordinator</div>
+    </div>
+    <div class="hs hs-mi" onclick="fH('MI',this)">
+      <div class="hs-lbl">Moderate</div>
+      <h3>6</h3>
+      <div class="hs-when">1 siklus semester</div>
+      <div class="hs-pic">PIC: Tim Dosen</div>
+    </div>
+    <div class="hs hs-lt" onclick="fH('LT',this)">
+      <div class="hs-lbl">Long-Term</div>
+      <h3>3</h3>
+      <div class="hs-when">Siklus kurikulum berikutnya</div>
+      <div class="hs-pic">PIC: Koordinator + RMK + Kaprodi</div>
+    </div>
+  </div>
+  <div class="rec-fbar">
+    <span class="fbar-lbl">Filter:</span>
+    <button class="fb on" data-f="all" onclick="fRecs('all',this)">Semua</button>
+    <button class="fb" data-f="QW" onclick="fRecs('QW',this)">Quick Wins</button>
+    <button class="fb" data-f="MI" onclick="fRecs('MI',this)">Moderate</button>
+    <button class="fb" data-f="LT" onclick="fRecs('LT',this)">Long-Term</button>
+    <button class="fb" data-f="P1" onclick="fRecs('P1',this)">Prioritas 1</button>
+    <button class="fb" data-f="P2" onclick="fRecs('P2',this)">Prioritas 2</button>
+    <span class="fbar-ct" id="rCt">15 dari 15</span>
+  </div>
+  <div class="rec-grid" id="recGrid"></div>
+  <!-- IE matrix -->
+  <div class="ie-box">
+    <h4>Impact vs. Effort — Posisi 15 Rekomendasi</h4>
+    <div class="ie-wrap">
+      <div class="ie-ax-y">Dampak Pembelajaran ↑</div>
+      <div class="ie-plot" id="iePlot">
+        <div class="ie-q ie-q1">Prioritas Utama</div>
+        <div class="ie-q ie-q2">Jadwalkan</div>
+        <div class="ie-q ie-q3">Pertimbangkan</div>
+        <div class="ie-q ie-q4">Pantau</div>
+      </div>
+      <div class="ie-ax-x">Upaya yang Dibutuhkan →</div>
+    </div>
+    <div class="ie-legend">
+      <div class="ie-leg-item"><div class="ie-leg-dot" style="background:var(--green-mid)"></div>Quick Wins</div>
+      <div class="ie-leg-item"><div class="ie-leg-dot" style="background:#D97706"></div>Moderate</div>
+      <div class="ie-leg-item"><div class="ie-leg-dot" style="background:var(--blue)"></div>Long-Term</div>
+    </div>
+  </div>
+  <!-- Traceability -->
+  <div class="trace-sec">
+    <h4 style="font-size:.88rem;font-weight:700;color:var(--tx-primary);margin-bottom:6px">Matriks Keterlacakan Gap → Rekomendasi</h4>
+    <p style="font-size:.79rem;color:var(--tx-secondary);margin-bottom:10px">Setiap gap memiliki rekomendasi penutup yang terdefinisi. Klik header untuk menyoroti hubungan.</p>
+    <button class="trace-toggle" onclick="togTrace()">Tampilkan Matriks ↓</button>
+    <div class="trace-wrap" id="traceWrap"><table class="tt" id="traceTable"></table></div>
+  </div>
+</section>
+
+<!-- ══════════ S8: TRACKER ══════════ -->
+<section id="section-tracker" class="sec sec-white">
+  <div class="sh">
+    <div class="sh-eyebrow">S8 — Progress Tracker</div>
+    <h2>Pantau implementasi 15 rekomendasi</h2>
+    <p class="lede">Status tersimpan di browser. Ubah status setiap rekomendasi sesuai kemajuan aktual implementasi.</p>
+  </div>
+  <div class="trk-hdr" id="trkHdr"></div>
+  <div class="kanban" id="kanban"></div>
+  <div style="text-align:center;margin-top:14px">
+    <button class="trk-reset" onclick="rstTrack()">Reset Semua Status</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="ft-grid">
+    <div>
+      <div class="ft-label">Identitas Dokumen</div>
+      <h3>Dio Nanda Pratama Hidayat</h3>
+      <p>NPM 4121220161 · Magang DJP 2025</p>
+      <p>MKN4103 Penagihan dan Upaya Hukum</p>
+      <div class="ft-disc">Improvement Note ini bukan evaluasi kualitas pengajaran, bukan RPS pengganti, dan tidak mengusulkan perubahan CPL Program Studi. Seluruh temuan terbuka untuk dikoreksi bersama dosen pengampu.</div>
+    </div>
+    <div>
+      <div class="ft-label">Pertanyaan untuk Diskusi</div>
+      <ul class="ft-qs">
+        <li>Dari sudut pandang DJP, gap mana yang paling terasa dampaknya dalam pekerjaan sehari-hari?</li>
+        <li>Apakah ada hambatan implementasi Quick Wins yang perlu dipertimbangkan lebih lanjut?</li>
+        <li>Apakah koordinasi MKN4103–MKN4126 sudah berjalan secara informal di luar dokumen RPS?</li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-label">Dokumen Terkait</div>
+      <ul class="ft-docs">
+        <li>Argument Map (Hierarki Argumen)</li>
+        <li>Executive Outline (2 halaman)</li>
+        <li>Visual Inventory (18 visual)</li>
+        <li>Visual Package v1</li>
+        <li>PPT Storyboard (13 slide)</li>
+        <li>HTML Interactive — Mature Version (dokumen ini)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bottom">Improvement Note · RPS MKN4103 · Dio Nanda Pratama Hidayat · 2025 · Seluruh temuan bersumber dari dokumen RPS resmi yang ditetapkan 17 Maret 2025</div>
+</footer>
+
+</main>
+</div><!-- #wrap -->
+
+<script>
+/* ════════ DATA (tidak berubah dari v2) ════════ */
+const GAPS=[
+  {id:'G1',name:'Inversi Sekuens Materi',urg:'SEGERA',root:[0],brief:'Upaya hukum (pertemuan 4–7) diajarkan sebelum penagihan aktif (10–13) yang merupakan objeknya.',problem:'RPS mengikuti sistematika bab peraturan, bukan alur taxpayer journey. Mahasiswa mempelajari gugatan sebelum memahami penagihan aktif sebagai objek sengketa.',impact:'Mahasiswa diminta memahami gugatan sebelum tahu apa yang digugat.',ref:'Alur: SKP → Penagihan Aktif → Upaya Hukum',recs:['QW2','MI4']},
+  {id:'G2',name:'Kekosongan Regulasi',urg:'SEGERA',root:[1],brief:'PMK 81/2024, PMK 118/2024, dan PMK 61/2023 tidak ada dalam daftar pustaka resmi RPS.',problem:'Tiga PMK kunci absen: PMK 81/2024 berlaku 1 Jan 2025 (75+ hari sebelum RPS ditetapkan), PMK 118/2024 berlaku 2024, dan PMK 61/2023 yang sudah dipakai dalam kuliah tetapi tidak terdaftar.',impact:'RPS mengajarkan kerangka hukum yang tidak lagi sepenuhnya berlaku.',ref:'PMK 61/2023 · PMK 118/2024 · PMK 81/2024',recs:['QW1','MI6','LT3']},
+  {id:'G3',name:'Coretax Terisolasi',urg:'SEGERA',root:[2],brief:'Coretax hanya muncul sebagai "isu terkini" di akhir semester. Tidak ada CPMK yang menargetkan kompetensi digital.',problem:'Sistem yang menyentuh 5 dari 5 fase proses DJP diperlakukan sebagai topik penutup. Tidak ada Sub-CPMK dengan indikator kompetensi Coretax.',impact:'Platform kerja utama DJP diperlakukan sebagai epilog, bukan fondasi kompetensi.',ref:'PMK 81/2024 · Efektif 1 Januari 2025',recs:['QW4','MI1','LT5']},
+  {id:'G4',name:'Studi Kasus Tanpa Substansi',urg:'MENDESAK',root:[2],brief:'PBL dan Case Method tercantum dalam RPS, namun tidak didukung studi kasus terstandardisasi.',problem:'Tidak ada skenario kasus baku untuk PBL lintas kelas paralel. Studi lapangan ada di RPS tetapi tanpa TOR, lembar observasi, format laporan, dan rubrik penilaian.',impact:'Kualitas PBL bergantung pada inisiatif individual dosen — bukan sistem yang terstandar.',ref:'Sub-CPMK 10–11 · Studi Lapangan',recs:['MI2','MI3']},
+  {id:'G5',name:'Mismatch Kompetensi SKS',urg:'MENDESAK',root:[2],brief:'Sub-CPMK 10–11 menuntut produksi dokumen hukum kompleks, namun mekanisme integrasi MKN4103–MKN4126 belum terdokumentasi.',problem:'Sub-CPMK 10–11 mengharuskan mahasiswa menghasilkan SK Keberatan, Surat Uraian Banding, Kontra Memori PK, dll. RPS tidak menjelaskan pembagian tanggung jawab antara MKN4103 dan MKN4126.',impact:'Risiko tumpang tindih atau kekosongan pencapaian Sub-CPMK.',ref:'Sub-CPMK 10 · Sub-CPMK 11',recs:['LT1','LT2','LT4']},
+  {id:'G6',name:'Inkonsistensi Teknis',urg:'BERTAHAP',root:[2],brief:'Sub-CPMK 16 tidak memiliki topik, indikator, atau bobot penilaian. UU dalam daftar pustaka tanpa nomor lengkap.',problem:'Sub-CPMK 16 tercantum tanpa substansi. UU KUP, UU Kepabeanan, UU Pengadilan Pajak tidak mencantumkan nomor undang-undang secara lengkap.',impact:'Inkonsistensi dokumen yang mudah diperbaiki namun mengurangi profesionalisme RPS.',ref:'Sub-CPMK 16 · Daftar Pustaka',recs:['QW5']},
+  {id:'G7',name:'Perspektif Tidak Lengkap',urg:'BERTAHAP',root:[0],brief:'Perspektif Wajib Pajak baru muncul di akhir semester. Kepailitan diajarkan sebelum penyitaan.',problem:'Materi hampir sepenuhnya dari perspektif fiskus. Kepailitan (pertemuan 8–9) muncul sebelum penyitaan (10–13) sebagai prasyarat logisnya.',impact:'Pemahaman satu sisi dan sekuens yang tidak mengikuti logika proses.',ref:'Pertemuan 8–9 vs. Pertemuan 10–13',recs:['QW3','MI4','LT4']},
+  {id:'G8',name:'Konteks Bisnis Absen',urg:'BERTAHAP',root:[0],brief:'Interlock keberatan–penagihan dan konsekuensi finansial sengketa tidak diajarkan secara eksplisit.',problem:'RPS belum mengintegrasikan: interlock keberatan–penagihan (Pasal 25(7) KUP), denda 30%/60%, dan syarat pelunasan 50% sebelum banding.',impact:'Lulusan memahami prosedur tetapi tidak memahami implikasi strategis dan finansial sengketa.',ref:'Pasal 25(7)(9) KUP · Pasal 27(5d) KUP · Pasal 36(4) UU PP',recs:['MI5','LT5']},
+  {id:'G9',name:'Referensi Usang',urg:'RENDAH',root:[1],brief:'Referensi utama MKN4103 bertumpu pada literatur 2006 dan 2017, sementara MKN4126 sudah menggunakan 2020–2021.',problem:'Buku Ajar PKN STAN (2017) dan Chorib dkk. (2006) menjadi referensi utama MKN4103. MKN4126 sudah lebih mutakhir.',impact:'Ketidaksesuaian basis referensi antar dua mata kuliah yang seharusnya terintegrasi.',ref:'Referensi MKN4103 vs. MKN4126',recs:['MI6']},
+];
+const RECS=[
+  {id:'QW1',h:'QW',p:'P1',action:'Perbarui daftar pustaka',out:'PMK 81/2024, PMK 118/2024, PMK 61/2023 masuk RPS. Nomor UU dilengkapi.',pic:'Dosen Koordinator',gaps:['G2','G9'],ie:{x:15,y:85}},
+  {id:'QW2',h:'QW',p:'P1',action:'Susun ulang sekuens Sub-CPMK',out:'Urutan mengikuti 5 fase taxpayer journey: SKP → Penagihan → Upaya Hukum → Litigasi → Penatausahaan.',pic:'Dosen Koordinator',gaps:['G1'],ie:{x:20,y:80}},
+  {id:'QW3',h:'QW',p:'P2',action:'Pisahkan Banding dan Gugatan',out:'2 pertemuan terpisah dengan perbedaan objek, dasar hukum, dan konsekuensi finansial dijelaskan eksplisit.',pic:'Dosen Koordinator',gaps:['G7'],ie:{x:15,y:70}},
+  {id:'QW4',h:'QW',p:'P1',action:'Perluas CPMK 5 (tambah Coretax)',out:'CPMK 5 mencakup indikator kompetensi digital berbasis Coretax secara eksplisit.',pic:'Dosen Koordinator',gaps:['G3'],ie:{x:18,y:88}},
+  {id:'QW5',h:'QW',p:'P2',action:'Lengkapi Sub-CPMK 16',out:'Sub-CPMK 16 memiliki topik, indikator, dan bobot penilaian terdokumentasi.',pic:'Dosen Koordinator',gaps:['G6'],ie:{x:12,y:55}},
+  {id:'QW6',h:'QW',p:'P2',action:'Tambahkan referensi MKN4126',out:'Pustaka MKN4103 menyertakan referensi MKN4126 sebagai dokumen pendukung ekosistem.',pic:'Dosen Koordinator',gaps:[],ie:{x:10,y:50}},
+  {id:'MI1',h:'MI',p:'P1',action:'Integrasikan touchpoints Coretax',out:'Sub-CPMK relevan memiliki indikator kompetensi digital diverifikasi terhadap PMK 81/2024.',pic:'Tim Dosen',gaps:['G3'],ie:{x:42,y:82}},
+  {id:'MI2',h:'MI',p:'P1',action:'Standardisasi skenario PBL',out:'Satu skenario kasus baku untuk seluruh kelas paralel. Variasi soal untuk evaluasi.',pic:'Tim Dosen',gaps:['G4'],ie:{x:45,y:78}},
+  {id:'MI3',h:'MI',p:'P2',action:'Susun TOR Studi Lapangan',out:'TOR dengan tujuan, lembar observasi, format laporan, rubrik penilaian, koordinasi mitra.',pic:'Tim Dosen',gaps:['G4'],ie:{x:48,y:72}},
+  {id:'MI4',h:'MI',p:'P2',action:'Integrasikan perspektif WP',out:'Perspektif Wajib Pajak hadir sejak awal. Kepailitan direlokasi setelah penyitaan.',pic:'Tim Dosen',gaps:['G1','G7'],ie:{x:40,y:68}},
+  {id:'MI5',h:'MI',p:'P2',action:'Tambah konteks risiko finansial',out:'Materi denda 30%/60%, syarat pelunasan 50%, dan interlock keberatan–penagihan dimasukkan.',pic:'Tim Dosen',gaps:['G8'],ie:{x:45,y:65}},
+  {id:'MI6',h:'MI',p:'P3',action:'Perbarui referensi pasca-2020',out:'Referensi MKN4103 setara mutakhirnya dengan MKN4126. Role play Jurusita Pajak diformalkan.',pic:'Tim Dosen',gaps:['G2','G9'],ie:{x:50,y:52}},
+  {id:'LT1',h:'LT',p:'P1',action:'Workshop drafting dokumen hukum',out:'Workshop terbimbing Sub-CPMK 10–11 dengan rubrik penilaian tersendiri.',pic:'Koordinator + Tim Dosen',gaps:['G5'],ie:{x:72,y:85}},
+  {id:'LT2',h:'LT',p:'P1',action:'Formalisasi koordinasi MKN4103–MKN4126',out:'Sinkronisasi RPS, skenario kasus bersama, rapat koordinasi rutin antar dosen.',pic:'Koordinator + RMK',gaps:['G5'],ie:{x:78,y:80}},
+  {id:'LT3',h:'LT',p:'P2',action:'SOP pembaruan regulasi (PPEPP)',out:'SOP pembaruan regulasi minimal 2× per tahun terintegrasi dalam siklus PPEPP.',pic:'Koordinator + Kaprodi',gaps:['G2'],ie:{x:82,y:75}},
+];
+const REGS=[
+  {name:'PMK 61/2023',since:'2023',st:'part',label:'Dipakai, tak terdaftar',sub:'Tata cara penghapusan piutang pajak kedaluwarsa',act:'Masukkan ke daftar pustaka'},
+  {name:'PMK 118/2024',since:'2024',st:'miss',label:'Belum ada di RPS',sub:'Penyempurnaan tata cara keberatan perpajakan',act:'Tambahkan ke daftar pustaka'},
+  {name:'PMK 81/2024 (Coretax)',since:'1 Jan 2025',st:'miss',label:'Belum ada di RPS',sub:'Sistem inti DJP: mengotomasi ST, SP, TAM, keberatan digital',act:'Tambahkan — berlaku sebelum RPS'},
+  {name:'UU KUP (tanpa nomor)',since:'—',st:'part',label:'Ada, tidak lengkap',sub:'Ketentuan umum tata cara perpajakan',act:'Lengkapi nomor dan tahun'},
+  {name:'UU Kepabeanan (tanpa nomor)',since:'—',st:'part',label:'Ada, tidak lengkap',sub:'Hukum kepabeanan',act:'Lengkapi nomor dan tahun'},
+  {name:'UU Pengadilan Pajak (tanpa nomor)',since:'—',st:'part',label:'Ada, tidak lengkap',sub:'Prosedur banding dan gugatan',act:'Lengkapi nomor dan tahun'},
+  {name:'Buku Ajar PKN STAN',since:'2017',st:'old',label:'Ada, sudah usang',sub:'Referensi utama MKN4103',act:'Pertimbangkan pembaruan'},
+  {name:'Chorib dkk.',since:'2006',st:'old',label:'Ada, sudah usang',sub:'Referensi hukum perpajakan',act:'Pertimbangkan pembaruan'},
+];
+const TRACE={
+  G1:['QW2','MI4'],G2:['QW1','MI6','LT3'],G3:['QW4','MI1','LT5'],
+  G4:['MI2','MI3'],G5:['LT1','LT2','LT4'],G6:['QW5'],
+  G7:['QW3','MI4','LT4'],G8:['MI5','LT5'],G9:['QW1','MI6'],
+};
+const MDET=[
+  {t:'01 · Foundation Audit',b:'Inventarisasi seluruh komponen dokumen RPS: CPL (6 buah) · CPMK (5 buah) · Sub-CPMK (16 buah) · sistem penilaian (Kehadiran 4%, Sikap 12%, Kuis 12%, Penugasan 12%, UTS 30%, UAS 30%) · daftar pustaka · keterkaitan MKN4103–MKN4126 · tanggal penetapan (17 Maret 2025). Audit ini menjadi baseline untuk seluruh perbandingan selanjutnya.'},
+  {t:'02 · Existing vs Expected Matrix',b:'Pemetaan pada 6 dimensi: <strong>Materi</strong> (sekuens dan substansi) · <strong>Regulasi</strong> (kesesuaian daftar pustaka) · <strong>Studi Kasus</strong> (standardisasi PBL) · <strong>Coretax</strong> (integrasi sistem DJP) · <strong>Proses Bisnis DJP</strong> (alur nyata) · <strong>Kompetensi</strong> (keterkaitan antar-MK). Setiap dimensi dinilai kondisi existing vs. kondisi yang diharapkan.'},
+  {t:'03 · Gap Analysis',b:'Setiap kesenjangan dianalisis: akar penyebab sistemik · dampak terhadap capaian pembelajaran · tingkat urgensi (Segera / Mendesak / Bertahap / Rendah). Ditemukan 9 gap yang semuanya bersumber dari 3 masalah sistemik yang sama.'},
+  {t:'04 · Recommendation Framework',b:'15 rekomendasi dalam 3 horizon: <strong>Quick Wins</strong> (6) untuk revisi RPS terdekat · <strong>Moderate</strong> (6) untuk satu siklus semester · <strong>Long-Term</strong> (3) untuk proses institusional. Setiap rekomendasi dilengkapi tindakan spesifik, output terukur, dan penanggung jawab.'},
+];
+/* ════════ TRACKER ════════ */
+const getTS=()=>{try{return JSON.parse(localStorage.getItem('okm_mature')||'{}')}catch(e){return{}}};
+const setTS=s=>{try{localStorage.setItem('okm_mature',JSON.stringify(s))}catch(e){}};
+/* ════════ URGENCY MAP ════════ */
+const urgBadge={SEGERA:'b-red',MENDESAK:'b-amber',BERTAHAP:'b-teal',RENDAH:'b-green'};
+const hCol={QW:'var(--green-mid)',MI:'#D97706',LT:'var(--blue)'};
+/* ════════ RENDER GAPS ════════ */
+function renderGaps(){
+  document.getElementById('gapGrid').innerHTML=GAPS.map(g=>`
+  <div class="gc" id="gc-${g.id}" data-u="${g.urg}" data-r="${g.root}" onclick="togGap('${g.id}')">
+    <div class="gc-top"><span class="gc-code">${g.id}</span><span class="badge ${urgBadge[g.urg]}">${g.urg}</span></div>
+    <div class="gc-body"><div class="gc-name">${g.name}</div><div class="gc-brief">${g.brief}</div></div>
+    <div class="gc-foot">
+      <span class="gc-rct">${g.recs.length} rekomendasi penutup</span>
+      <span class="gc-exp">Detail <svg width="11" height="11" viewBox="0 0 11 11"><path d="M2 4l3.5 3.5L9 4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg></span>
+    </div>
+    <div class="gc-detail" id="gd-${g.id}">
+      <div class="gc-di">
+        <div class="dl">
+          <span class="dl-t">Masalah</span><span class="dl-d">${g.problem}</span>
+          <span class="dl-t">Dampak</span><span class="dl-d dl-imp">${g.impact}</span>
+          <span class="dl-t">Referensi</span><span class="dl-d">${g.ref}</span>
+        </div>
+        <div class="rl-lbl">Rekomendasi Penutup:</div>
+        <div class="rl">
+          ${g.recs.map(r=>`<button class="rl-btn" onclick="event.stopPropagation();goRec('${r}')">${r} →</button>`).join('')}
+          ${!g.recs.length?'<span style="font-size:.78rem;color:var(--tx-muted)">—</span>':''}
+        </div>
+      </div>
+    </div>
+  </div>`).join('');
+}
+function togGap(id){
+  const c=document.getElementById('gc-'+id),d=document.getElementById('gd-'+id);
+  const was=c.classList.contains('open');
+  document.querySelectorAll('.gc.open').forEach(x=>{x.classList.remove('open');const dd=document.getElementById('gd-'+x.id.slice(3));if(dd)dd.style.height='0'});
+  if(!was){c.classList.add('open');d.style.height=d.scrollHeight+'px'}
+}
+/* ════════ GAP FILTER ════════ */
+let aRoot=-1;
+function fGaps(f,btn){
+  document.querySelectorAll('.fbar .fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');aRoot=-1;
+  document.querySelectorAll('.rc').forEach(r=>r.classList.remove('sel'));
+  let n=0;
+  GAPS.forEach(g=>{const show=f==='all'||g.urg===f;document.getElementById('gc-'+g.id).classList.toggle('dim',!show);if(show)n++});
+  document.getElementById('gCt').textContent=`${n} dari 9 gap`;
+}
+function filterByRoot(idx,el){
+  const same=aRoot===idx;aRoot=same?-1:idx;
+  document.querySelectorAll('.rc').forEach(r=>r.classList.remove('sel'));
+  document.querySelectorAll('.fbar .fb').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.fbar .fb[data-f=all]').classList.add('on');
+  if(!same)el.classList.add('sel');
+  let n=0;
+  GAPS.forEach(g=>{const show=same||g.root.includes(idx);document.getElementById('gc-'+g.id).classList.toggle('dim',!show);if(show)n++});
+  document.getElementById('gCt').textContent=`${n} dari 9 gap`;
+}
+/* ════════ RENDER REGS ════════ */
+function renderRegs(){
+  const sc={miss:'ch-miss',part:'ch-part',old:'ch-old'};
+  document.getElementById('regBody').innerHTML=REGS.map(r=>`
+  <tr>
+    <td><strong>${r.name}</strong></td>
+    <td style="color:rgba(200,220,255,.7);font-size:.79rem">${r.since}</td>
+    <td><span class="chip ${sc[r.st]}">${r.label}</span></td>
+    <td style="font-size:.78rem;color:rgba(175,200,240,.65)">${r.sub}</td>
+    <td><span class="badge b-amber" style="font-size:.67rem">${r.act}</span></td>
+  </tr>`).join('');
+}
+/* ════════ RENDER RECS ════════ */
+function renderRecs(){
+  const pd={P1:[1,0,0],P2:[1,1,0],P3:[1,1,1]};
+  document.getElementById('recGrid').innerHTML=RECS.map(r=>{
+    const dots=pd[r.p].map(on=>`<div class="pd" style="background:${on?hCol[r.h]:'var(--bd)'}"></div>`).join('');
+    return`<div class="rcc" id="rc-${r.id}" data-h="${r.h}" data-p="${r.p}">
+      <div class="rcc-head"><span class="rcc-code ${r.h.toLowerCase()}">${r.id}</span><div class="pdots">${dots}</div></div>
+      <div class="rcc-body">
+        <div class="rcc-action">${r.action}</div>
+        <div class="rcc-out">${r.out}</div>
+        <div class="rcc-meta">
+          <span class="badge ${r.h==='QW'?'b-green':r.h==='MI'?'b-amber':'b-blue'}" style="font-size:.65rem">${r.h==='QW'?'Quick Win':r.h==='MI'?'Moderate':'Long-Term'}</span>
+          <span class="rcc-pic">${r.pic}</span>
+        </div>
+        <div class="rcc-glinks">${r.gaps.map(g=>`<button class="rcc-gb" onclick="goGap('${g}')">${g}</button>`).join('')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function fRecs(f,btn){
+  document.querySelectorAll('.rec-fbar .fb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');let n=0;
+  RECS.forEach(r=>{const show=f==='all'||r.h===f||r.p===f;document.getElementById('rc-'+r.id).classList.toggle('dim',!show);if(show)n++});
+  document.getElementById('rCt').textContent=`${n} dari 15`;
+}
+function fH(h,el){fRecs(h,el);document.querySelectorAll('.hs').forEach(x=>x.classList.add('inactive'));el.classList.remove('inactive')}
+/* ════════ IE MATRIX ════════ */
+function renderIE(){
+  const p=document.getElementById('iePlot');
+  p.querySelectorAll('.ie-dot').forEach(d=>d.remove());
+  const pw=p.offsetWidth||480,ph=p.offsetHeight||240;
+  RECS.forEach(r=>{
+    const x=r.ie.x/100*(pw-24)+12,y=(1-r.ie.y/100)*(ph-24)+12;
+    const col=hCol[r.h];
+    const d=document.createElement('div');
+    d.className='ie-dot';d.style.left=x+'px';d.style.top=y+'px';
+    d.innerHTML=`<div class="ie-dot-inner" style="background:${col}">${r.id}</div><div class="ie-tip">${r.action}</div>`;
+    d.onclick=()=>{RECS.forEach(rr=>document.getElementById('rc-'+rr.id).classList.remove('hl'));document.getElementById('rc-'+r.id).classList.add('hl','ring-in');go('section-rekomendasi');setTimeout(()=>document.getElementById('rc-'+r.id).classList.remove('hl','ring-in'),3000)};
+    p.appendChild(d);
+  });
+}
+/* ════════ TRACEABILITY ════════ */
+function renderTrace(){
+  const rIds=RECS.map(r=>r.id),gIds=GAPS.map(g=>g.id);
+  const hd={QW:'dqw',MI:'dmi',LT:'dlt'};
+  let html='<tr><th>Gap \ Rek.</th>'+rIds.map(r=>`<th onclick="hlCol('${r}')" style="cursor:pointer">${r}</th>`).join('')+'</tr>';
+  gIds.forEach(gid=>{
+    html+=`<tr data-g="${gid}"><td onclick="hlRow('${gid}')" style="cursor:pointer">${gid}</td>`;
+    rIds.forEach(rid=>{const r=RECS.find(x=>x.id===rid);const has=TRACE[gid]&&TRACE[gid].includes(rid);html+=`<td>${has?`<span class="${hd[r.h]}">●</span>`:''}</td>`});
+    html+='</tr>';
+  });
+  document.getElementById('traceTable').innerHTML=html;
+}
+function togTrace(){
+  const w=document.getElementById('traceWrap'),btn=document.querySelector('.trace-toggle');
+  const o=w.classList.toggle('open');
+  btn.textContent=o?'Sembunyikan Matriks ↑':'Tampilkan Matriks ↓';
+}
+function hlCol(rid){document.querySelectorAll('.tt th').forEach(th=>th.style.background='');const h=document.querySelector(`.tt th[onclick*="${rid}"]`);if(h)h.style.background='var(--teal)'}
+function hlRow(gid){document.querySelectorAll('.tt tr').forEach(tr=>tr.style.background='');const tr=document.querySelector(`.tt tr[data-g="${gid}"]`);if(tr)tr.style.background='var(--amber-lt)'}
+/* ════════ CROSS-LINKS ════════ */
+function goGap(gid){
+  const el=document.getElementById('gc-'+gid);if(!el)return;
+  GAPS.forEach(g=>document.getElementById('gc-'+g.id).classList.remove('dim'));
+  document.querySelectorAll('.fbar .fb').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.fbar .fb[data-f=all]').classList.add('on');
+  document.getElementById('gCt').textContent='9 dari 9 gap';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.add('hl','ring-in');
+  const d=document.getElementById('gd-'+gid);el.classList.add('open');d.style.height=d.scrollHeight+'px';
+  setTimeout(()=>el.classList.remove('hl','ring-in'),3500);
+}
+function goRec(rid){
+  const el=document.getElementById('rc-'+rid);if(!el)return;
+  RECS.forEach(r=>document.getElementById('rc-'+r.id).classList.remove('dim'));
+  document.querySelectorAll('.rec-fbar .fb').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.rec-fbar .fb[data-f=all]').classList.add('on');
+  document.getElementById('rCt').textContent='15 dari 15';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.add('hl','ring-in');
+  setTimeout(()=>el.classList.remove('hl','ring-in'),3500);
+}
+/* ════════ METHODOLOGY TABS ════════ */
+function showMs(idx,el){
+  document.querySelectorAll('.ms').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');
+  const det=document.getElementById('msDetail');
+  det.innerHTML=`<div class="ms-detail show"><h4>${MDET[idx].t}</h4><p>${MDET[idx].b}</p></div>`;
+}
+/* ════════ TRACKER ════════ */
+function renderTracker(){
+  const st=getTS();
+  const hs=[
+    {k:'QW',label:'Quick Wins',cls:'kh-qw',recs:RECS.filter(r=>r.h==='QW')},
+    {k:'MI',label:'Moderate',cls:'kh-mi',recs:RECS.filter(r=>r.h==='MI')},
+    {k:'LT',label:'Long-Term',cls:'kh-lt',recs:RECS.filter(r=>r.h==='LT')},
+  ];
+  const done=RECS.filter(r=>st[r.id]==='selesai').length;
+  const bars=[
+    {k:'QW',label:'Quick Wins',tot:6,col:'var(--green-mid)'},
+    {k:'MI',label:'Moderate',tot:6,col:'#D97706'},
+    {k:'LT',label:'Long-Term',tot:3,col:'var(--blue)'},
+    {k:'ALL',label:'Total',tot:RECS.length,col:'var(--navy)'},
+  ];
+  document.getElementById('trkHdr').innerHTML=bars.map(b=>{
+    const cnt=b.k==='ALL'?done:RECS.filter(r=>r.h===b.k&&st[r.id]==='selesai').length;
+    const pct=Math.round(cnt/b.tot*100);
+    return`<div class="trk-bar-card">
+      <div class="trk-bar-top"><span>${b.label}</span><span>${cnt}/${b.tot}</span></div>
+      <div class="trk-bar-bg"><div class="trk-bar-fill" style="width:${pct}%;background:${b.col}"></div></div>
+    </div>`;
+  }).join('');
+  // Sidebar bars
+  document.getElementById('sbBars').innerHTML=bars.map(b=>{
+    const cnt=b.k==='ALL'?done:RECS.filter(r=>r.h===b.k&&st[r.id]==='selesai').length;
+    const pct=Math.round(cnt/b.tot*100);
+    return`<div class="sb-bar-row"><span class="sb-bar-lbl">${b.label}</span><div class="sb-bar-bg"><div class="sb-bar-fill" style="width:${pct}%;background:${b.col}"></div></div><span class="sb-bar-ct">${cnt}/${b.tot}</span></div>`;
+  }).join('');
+  // Kanban
+  document.getElementById('kanban').innerHTML=hs.map(h=>`
+  <div>
+    <div class="kb-head ${h.cls}">${h.label} (${h.recs.length})</div>
+    <div class="kb-body">
+      ${h.recs.map(r=>{const s=st[r.id]||'belum';return`
+      <div class="tk ${s}" id="tk-${r.id}">
+        <div class="tk-top"><span class="tk-code">${r.id}</span><span class="badge ${r.p==='P1'?'b-red':r.p==='P2'?'b-amber':'b-gray'}">${r.p}</span></div>
+        <div class="tk-action">${r.action}</div>
+        <div class="tk-pic">PIC: ${r.pic}</div>
+        <div class="tk-btns">
+          <button class="tk-btn${s==='belum'?' on-b':''}" onclick="setSt('${r.id}','belum')">Belum</button>
+          <button class="tk-btn${s==='proses'?' on-p':''}" onclick="setSt('${r.id}','proses')">Proses</button>
+          <button class="tk-btn${s==='selesai'?' on-s':''}" onclick="setSt('${r.id}','selesai')">Selesai</button>
+        </div>
+      </div>`;}).join('')}
+    </div>
+  </div>`).join('');
+}
+function setSt(id,st){const s=getTS();s[id]=st;setTS(s);renderTracker()}
+function rstTrack(){if(confirm('Reset semua status ke "Belum"?')){setTS({});renderTracker()}}
+/* ════════ CALCULATOR ════════ */
+function doCalc(raw){
+  const n=parseInt(raw.replace(/\D/g,''))||0;
+  const el=document.getElementById('cIn');
+  el.value=n?'Rp '+n.toLocaleString('id-ID'):'';
+  const fmt=v=>'Rp '+Math.round(v).toLocaleString('id-ID');
+  document.getElementById('c30').textContent=n?fmt(n*.3):'—';
+  document.getElementById('c50').textContent=n?fmt(n*.5):'—';
+  document.getElementById('c60').textContent=n?fmt(n*.6):'—';
+}
+function clrCalc(){document.getElementById('cIn').value='';['c30','c50','c60'].forEach(id=>document.getElementById(id).textContent='—')}
+/* ════════ NAVIGATION ════════ */
+function go(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+  if(window.innerWidth<=900)document.getElementById('sidebar').classList.remove('open');
+}
+function toggleSb(){document.getElementById('sidebar').classList.toggle('open')}
+/* ════════ SCROLL EFFECTS ════════ */
+function initScroll(){
+  const btt=document.getElementById('btt'),pg=document.getElementById('pgFill');
+  const sections=['hero','section-exec','section-konteks','section-analisis','section-kekuatan','section-gap','section-bukti','section-implikasi','section-rekomendasi','section-tracker'];
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      const id=e.target.id;
+      document.querySelectorAll('.sb-link').forEach(l=>{
+        const fn=l.getAttribute('onclick')||'';
+        l.classList.toggle('on',fn.includes("'"+id+"'"));
+      });
+      if(id==='section-konteks'){setTimeout(()=>{const f=document.getElementById('tlFill');if(f)f.style.width='100%'},300)}
+      if(id==='hero'){
+        document.querySelectorAll('[data-t]').forEach(el=>{
+          const t=parseInt(el.dataset.t);let i=0;
+          const s=()=>{i++;el.textContent=i;if(i<t)setTimeout(s,70+Math.random()*50)};
+          setTimeout(s,400);
+        });
+      }
+    });
+  },{rootMargin:'-35% 0px -58% 0px'});
+  document.querySelectorAll('section[id],footer[id]').forEach(s=>io.observe(s));
+  window.addEventListener('scroll',()=>{
+    const sc=window.scrollY,mx=document.body.scrollHeight-window.innerHeight;
+    btt.classList.toggle('show',sc>300);
+    pg.style.width=(mx>0?sc/mx*100:0)+'%';
+  },{passive:true});
+}
+/* ════════ INIT ════════ */
+renderGaps();renderRecs();renderRegs();renderTrace();renderTracker();initScroll();
+// Init first method detail
+showMs(0,document.querySelector('.ms.on'));
+// IE after layout
+setTimeout(renderIE,250);
+window.addEventListener('resize',()=>setTimeout(renderIE,80));
+// Hero counter if already visible
+if(document.getElementById('hero').getBoundingClientRect().top<window.innerHeight){
+  setTimeout(()=>{document.querySelectorAll('[data-t]').forEach(el=>{const t=parseInt(el.dataset.t);let i=0;const s=()=>{i++;el.textContent=i;if(i<t)setTimeout(s,70)};s()})},600);
+}
+// Timeline if visible
+setTimeout(()=>{const f=document.getElementById('tlFill');if(f)f.style.width='100%'},1200);
+</script>
+</body>
+</html>
